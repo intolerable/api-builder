@@ -19,6 +19,7 @@ library
   exposed-modules: 
     APIBuilder
     APIBuilder.API
+    APIBuilder.Builder
     APIBuilder.Decoding
     APIBuilder.Error
     APIBuilder.Routes

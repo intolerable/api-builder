@@ -5,12 +5,12 @@ module APIBuilder.API
   , liftState
   , runAPI
   , runRoute
-  , Builder(..)
   , name
   , baseURL
   , customizeRoute
   , customizeRequest ) where
 
+import APIBuilder.Builder
 import APIBuilder.Decoding
 import APIBuilder.Error
 import APIBuilder.Routes
@@ -56,14 +56,6 @@ routeRequest :: Builder -> Route -> Maybe Request
 routeRequest b route = 
   let initialURL = parseUrl (T.unpack $ routeURL (_baseURL b) (_customizeRoute b route)) in
   fmap (\url -> _customizeRequest b $ url { method = T.encodeUtf8 (httpMethod route) }) initialURL
-
-data Builder = Builder { _name :: Text
-                       , _baseURL :: Text
-                       , _customizeRoute :: Route -> Route
-                       , _customizeRequest :: Request -> Request }
-
-instance Show Builder where
-  show b = "Builder { name = " ++ T.unpack (_name b) ++ "}"
 
 name :: Text -> API s e ()
 name t = liftBuilder $ modify (\b -> b { _name = t })
