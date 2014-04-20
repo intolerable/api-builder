@@ -54,7 +54,7 @@ a `eitherOr` b =
 
 routeRequest :: Builder -> Route -> Maybe Request
 routeRequest b route = 
-  let initialURL = parseUrl (T.unpack $ routeURL (_baseURL b) (_customizeRoute b $ route)) in
+  let initialURL = parseUrl (T.unpack $ routeURL (_baseURL b) (_customizeRoute b route)) in
   fmap (\url -> _customizeRequest b $ url { method = T.encodeUtf8 (httpMethod route) }) initialURL
 
 data Builder = Builder { _name :: Text
