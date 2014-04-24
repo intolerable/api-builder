@@ -28,10 +28,7 @@ instance FromJSON Questions where
   parseJSON _ = mempty
 
 stackOverflow :: Builder
-stackOverflow = Builder { _name = "StackOverflow API"
-                        , _baseURL = "http://api.stackexchange.com"
-                        , _customizeRoute = id
-                        , _customizeRequest = id }
+stackOverflow = basicBuilder "StackOverflow API" "http://api.stackexchange.com"
 
 answersRoute :: Route
 answersRoute = Route { fragments = [ "2.2", "questions" ]

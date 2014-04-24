@@ -39,12 +39,10 @@ instance FromJSON Questions where
 ```
 
 Define a `Builder` for the API endpoint: 
+
 ```haskell
 stackOverflow :: Builder
-stackOverflow = Builder { _name = "StackOverflow API"
-                        , _baseURL = "http://api.stackexchange.com"
-                        , _customizeRequest = id
-                        , _customizeRoute = id }
+stackOverflow = basicBuilder "StackOverflow API" "http://api.stackexchange.com"
 ```
     
 And the `Route` to use to get the data:

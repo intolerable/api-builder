@@ -1,5 +1,6 @@
 module APIBuilder.Builder
-  ( Builder(..) ) where
+  ( Builder(..)
+  , basicBuilder ) where
 
 import APIBuilder.Routes
 
@@ -14,3 +15,6 @@ data Builder = Builder { _name :: Text
 
 instance Show Builder where
   show b = "Builder { name = " ++ T.unpack (_name b) ++ "}"
+
+basicBuilder :: Text -> Text -> Builder
+basicBuilder n b = Builder n b id id 
