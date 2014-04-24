@@ -28,14 +28,17 @@ instance FromJSON Questions where
   parseJSON _ = mempty
 
 stackOverflow :: Builder
-stackOverflow = Builder "StackOverflow API" "http://api.stackexchange.com" id id
+stackOverflow = Builder { _name = "StackOverflow API"
+                        , _baseURL = "http://api.stackexchange.com"
+                        , _customizeRoute = id
+                        , _customizeRequest = id }
 
 answersRoute :: Route
-answersRoute = Route [ "2.2", "questions" ]
-                     [ "order" =. Just "desc"
-                     , "sort" =. Just "activity"
-                     , "site" =. Just "stackoverflow" ]
-                     "GET"
+answersRoute = Route { fragments = [ "2.2", "questions" ]
+                     , urlParams = [ "order" =. Just "desc"
+                                   , "sort" =. Just "activity"
+                                   , "site" =. Just "stackoverflow" ]
+                     , httpMethod = "GET" }
 
 getAnswers :: IO (Either (APIError ()) Questions)
 getAnswers = runAPI stackOverflow () $ runRoute answersRoute
