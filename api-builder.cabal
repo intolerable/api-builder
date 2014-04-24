@@ -22,6 +22,7 @@ library
     APIBuilder.Builder
     APIBuilder.Decoding
     APIBuilder.Error
+    APIBuilder.Examples.StackOverflow
     APIBuilder.Routes
   build-depends: 
     base >=4.7 && < 4.8,
