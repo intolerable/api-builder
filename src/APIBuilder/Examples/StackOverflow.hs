@@ -6,14 +6,6 @@ import Data.Aeson
 import Data.Monoid (mempty)
 import Data.Text (Text)
 
-type StackOverflowAPI a = API () () a
-
-runSO :: StackOverflowAPI a -> IO (Either (APIError ()) a) 
-runSO = runAPI stackOverflow ()
-
-getAnswers :: IO (Either (APIError ()) Questions)
-getAnswers = runSO $ runRoute answersRoute
-
 data Question = Question { title :: Text
                          , isAnswered :: Bool
                          , score :: Int
@@ -44,3 +36,6 @@ answersRoute = Route [ "2.2", "questions" ]
                      , "sort" =. Just "activity"
                      , "site" =. Just "stackoverflow" ]
                      "GET"
+
+getAnswers :: IO (Either (APIError ()) Questions)
+getAnswers = runAPI stackOverflow () $ runRoute answersRoute
