@@ -30,7 +30,11 @@ data HTTPMethod = GET | POST
 routeURL :: Text -> Route -> Text
 routeURL baseURL (Route fs ps _) =
   let path = T.intercalate "/" fs
-  in baseURL <> "/" <> path <> "/?" <> buildParams ps
+  in baseURL <> "/" <> path <> pathParamsSep fs <> buildParams ps
+
+pathParamsSep :: [URLFragment] -> Text
+pathParamsSep [] = "?"
+pathParamsSep xs = if T.isInfixOf "." (last xs) then "?" else "/?"
 
 buildParams :: [URLParam] -> Text
 buildParams = T.pack . HTTP.urlEncodeVars . map (T.unpack *** T.unpack) . mapMaybe collectParams
