@@ -5,6 +5,7 @@ module APIBuilder.API
   , liftState
   , runAPI
   , runRoute
+  , routeRequest
   , name
   , baseURL
   , customizeRoute
