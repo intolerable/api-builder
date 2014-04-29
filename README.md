@@ -53,7 +53,7 @@ answersRoute = Route { fragments = [ "2.2", "questions" ]
                      , urlParams = [ "order" =. Just "desc"
                                    , "sort" =. Just "activity"
                                    , "site" =. Just "stackoverflow" ]
-                     , httpMethod = "GET" }
+                     , httpMethod = GET }
 ```
                          
 And a function to actually run the API:

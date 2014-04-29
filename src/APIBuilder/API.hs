@@ -22,8 +22,8 @@ import Control.Monad.Trans.Class (lift)
 import Control.Monad.IO.Class (liftIO)
 import Data.Aeson (FromJSON)
 import Data.Text (Text)
+import qualified Data.ByteString.Char8 as BS
 import qualified Data.Text as T
-import qualified Data.Text.Encoding as T
 import Network.HTTP.Conduit
 
 type API s e a = EitherT (APIError e) (StateT Builder (StateT s IO)) a
@@ -56,7 +56,7 @@ a `eitherOr` b =
 routeRequest :: Builder -> Route -> Maybe Request
 routeRequest b route = 
   let initialURL = parseUrl (T.unpack $ routeURL (_baseURL b) (_customizeRoute b route)) in
-  fmap (\url -> _customizeRequest b $ url { method = T.encodeUtf8 (httpMethod route) }) initialURL
+  fmap (\url -> _customizeRequest b $ url { method = BS.pack (show $ httpMethod route) }) initialURL
 
 name :: Text -> API s e ()
 name t = liftBuilder $ modify (\b -> b { _name = t })

@@ -2,6 +2,7 @@ module APIBuilder.Routes
   ( URLFragment
   , URLParam
   , Route(..)
+  , HTTPMethod(..)
   , routeURL
   , (=.) ) where
 
@@ -20,7 +21,10 @@ type URLParam = (Text, Maybe Text)
 
 data Route = Route { fragments :: [URLFragment]
                    , urlParams :: [URLParam]
-                   , httpMethod :: Text }
+                   , httpMethod :: HTTPMethod }
+  deriving (Show, Read, Eq)
+
+data HTTPMethod = GET | POST
   deriving (Show, Read, Eq)
 
 routeURL :: Text -> Route -> Text
