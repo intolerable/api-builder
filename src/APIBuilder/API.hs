@@ -16,6 +16,7 @@ import APIBuilder.Decoding
 import APIBuilder.Error
 import APIBuilder.Routes
 
+import Control.Exception
 import Control.Monad.Trans.Either
 import Control.Monad.Trans.State
 import Control.Monad.Trans.Class (lift)
@@ -44,7 +45,9 @@ runRoute :: (FromJSON a, FromJSON e) => Route -> API s e a
 runRoute route = do
   b <- liftBuilder get
   req <- hoistEither $ routeRequest b route `eitherOr` InvalidURLError
-  resp <- liftIO $ withManager (httpLbs req)
+  resp <- do
+    r <- liftIO $ try $ withManager (httpLbs req)
+    hoistEither $ either (Left . HTTPError) Right r 
   hoistEither $ decode $ responseBody resp
 
 eitherOr :: Maybe a -> b -> Either b a
