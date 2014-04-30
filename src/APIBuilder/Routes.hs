@@ -3,6 +3,7 @@ module APIBuilder.Routes
   , URLParam
   , Route(..)
   , HTTPMethod(..)
+  , showMethod
   , routeURL
   , (=.) ) where
 
@@ -24,8 +25,15 @@ data Route = Route { fragments :: [URLFragment]
                    , httpMethod :: HTTPMethod }
   deriving (Show, Read, Eq)
 
-data HTTPMethod = GET | POST
+data HTTPMethod = GET
+                | POST
+                | CustomMethod Text
   deriving (Show, Read, Eq)
+
+showMethod :: HTTPMethod -> String
+showMethod GET = "GET"
+showMethod POST = "POST"
+showMethod (CustomMethod t) = T.unpack t
 
 routeURL :: Text -> Route -> Text
 routeURL baseURL (Route fs ps _) =

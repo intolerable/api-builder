@@ -59,7 +59,7 @@ a `eitherOr` b =
 routeRequest :: Builder -> Route -> Maybe Request
 routeRequest b route = 
   let initialURL = parseUrl (T.unpack $ routeURL (_baseURL b) (_customizeRoute b route)) in
-  fmap (\url -> _customizeRequest b $ url { method = BS.pack (show $ httpMethod route) }) initialURL
+  fmap (\url -> _customizeRequest b $ url { method = BS.pack (showMethod $ httpMethod route) }) initialURL
 
 name :: Text -> API s e ()
 name t = liftBuilder $ modify (\b -> b { _name = t })
