@@ -1,3 +1,5 @@
+-- | Exports a bunch of stuff. Check 'APIBuilder.API', 'APIBuilder.Builder',
+--   'APIBuilder.Decoding', 'APIBuilder.Error', and 'APIBuilder.Routes'.
 module APIBuilder 
   ( module Exports ) where
 

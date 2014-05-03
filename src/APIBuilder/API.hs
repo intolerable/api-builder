@@ -1,11 +1,15 @@
-module APIBuilder.API
-  ( API 
-  , liftEither
-  , liftBuilder
-  , liftState
+module APIBuilder.API (
+  -- * API
+    API 
+  -- ** Running the API
   , runAPI
   , runRoute
   , routeRequest
+  -- ** Lifting
+  , liftEither
+  , liftBuilder
+  , liftState
+  -- ** Changing the @Builder@ within the API
   , name
   , baseURL
   , customizeRoute
@@ -27,20 +31,35 @@ import qualified Data.ByteString.Char8 as BS
 import qualified Data.Text as T
 import Network.HTTP.Conduit
 
+-- | Main API type. @s@ is the API's internal state, @e@ is the API's custom error type,
+--   and @a@ is the result when the API runs.
 type API s e a = EitherT (APIError e) (StateT Builder (StateT s IO)) a
 
-liftEither :: API s e a -> API s e a
-liftEither = id 
+-- | Lifts an action that works on an @API@ to an action that works on an @API@.
+--   This function is provided solely for future-proofing in the case that more transformers
+--   need to be stacked on top - it's implemented simply as @id@ for the moment.
+liftEither :: EitherT (APIError e) (StateT Builder (StateT s IO)) a -> API s e a
+liftEither = id
 
+-- | Lifts an action that operates on a @Builder@ to one that works on an @API@. Useful
+--   mainly for gaining access to a @Builder@ from inside an @API@.
 liftBuilder :: StateT Builder (StateT s IO) a -> API s e a
 liftBuilder = lift
 
+-- | Lifts an action on an @API@'s state type @s@ to one that works on the @API@. Good
+--   for messing with the state from inside the @API@. 
 liftState :: StateT s IO a -> API s e a
 liftState = lift . lift
 
-runAPI :: Builder -> s -> API s e a -> IO (Either (APIError e) a)
+-- | Runs an @API@ by executing its transformer stack and dumping it all into @IO@.
+runAPI :: Builder -- ^ initial @Builder@ for the @API@ 
+       -> s -- ^ initial state @s@ for the @API@
+       -> API s e a -- ^ the actual @API@ to run
+       -> IO (Either (APIError e) a) -- ^ IO action that returns either an error or the result
 runAPI b s api = evalStateT (evalStateT (runEitherT api) b) s
 
+-- | Runs a @Route@. Infers the type to convert to from the JSON with the @a@ in @API@,
+--   and infers the error type from @e@.
 runRoute :: (FromJSON a, FromJSON e) => Route -> API s e a
 runRoute route = do
   b <- liftBuilder get
@@ -56,19 +75,30 @@ a `eitherOr` b =
     Just x -> Right x
     Nothing -> Left b
 
+-- | Try to construct a @Request@ from a @Route@ (with the help of the @Builder@). Returns @Nothing@ if
+--   the URL is invalid or there is another error with the @Route@.
 routeRequest :: Builder -> Route -> Maybe Request
 routeRequest b route = 
   let initialURL = parseUrl (T.unpack $ routeURL (_baseURL b) (_customizeRoute b route)) in
   fmap (\url -> _customizeRequest b $ url { method = BS.pack (showMethod $ httpMethod route) }) initialURL
 
+-- | Modify the @name@ of the @Builder@ from inside an API. Using this is probably not the best idea,
+--   it's nice if the @Builder@'s name is stable at least.
 name :: Text -> API s e ()
 name t = liftBuilder $ modify (\b -> b { _name = t })
 
+-- | Modify the @baseURL@ of the @Builder@ from inside an API.
+--   Can be useful for changing the API's endpoints for certain requests.
 baseURL :: Text -> API s e ()
 baseURL t = liftBuilder $ modify (\b -> b { _baseURL = t })
 
+-- | Modify every @Route@ before it runs. Useful for adding extra params to every query,
+--   for example.
 customizeRoute :: (Route -> Route) -> API s e ()
 customizeRoute f = liftBuilder $ modify (\b -> b { _customizeRoute = f })
 
+
+-- | Modify every @Request@ before the API fetches it. Useful for adding headers to every request,
+--   for example.
 customizeRequest :: (Request -> Request) -> API s e ()
 customizeRequest f = liftBuilder $ modify (\b -> b { _customizeRequest = f })
