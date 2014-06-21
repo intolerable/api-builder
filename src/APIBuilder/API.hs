@@ -27,7 +27,6 @@ import Control.Monad.Trans.Class (lift)
 import Control.Monad.IO.Class (liftIO)
 import Data.Aeson (FromJSON)
 import Data.Text (Text)
-import qualified Data.ByteString.Char8 as BS
 import qualified Data.Text as T
 import Network.HTTP.Conduit
 
@@ -80,7 +79,7 @@ a `eitherOr` b =
 routeRequest :: Builder -> Route -> Maybe Request
 routeRequest b route = 
   let initialURL = parseUrl (T.unpack $ routeURL (_baseURL b) (_customizeRoute b route)) in
-  fmap (\url -> _customizeRequest b $ url { method = BS.pack (showMethod $ httpMethod route) }) initialURL
+  fmap (\url -> _customizeRequest b $ url { method = httpMethod route }) initialURL
 
 -- | Modify the @name@ of the @Builder@ from inside an API. Using this is probably not the best idea,
 --   it's nice if the @Builder@'s name is stable at least.

@@ -3,8 +3,6 @@ module APIBuilder.Routes
   , URLFragment
   , URLParam
   , (=.)
-  , HTTPMethod(..)
-  , showMethod
   , routeURL ) where
 
 import Control.Arrow ((***))
@@ -13,6 +11,7 @@ import Data.Monoid ((<>))
 import Data.Text (Text)
 import qualified Data.Text as T
 import qualified Network.HTTP.Base as HTTP (urlEncodeVars)
+import qualified Network.HTTP.Types.Method as HTTP
 
 -- | Alias for @Text@ to store the URL fragments for each @Route@.
 type URLFragment = Text
@@ -33,26 +32,8 @@ type URLParam = (Text, Maybe Text)
 --   with the server.
 data Route = Route { fragments :: [URLFragment]
                    , urlParams :: [URLParam]
-                   , httpMethod :: HTTPMethod }
+                   , httpMethod :: HTTP.Method }
   deriving (Show, Read, Eq)
-
--- | Type for different HTTP request methods. Has the two most common ones (GET and POST)
---   as well as support for custom methods.
-data HTTPMethod = GET
-                | POST
-                | CustomMethod Text
-  deriving (Show, Read, Eq)
-
--- | Get a @String@ from a HTTPMethod. Used mostly for creating @Request@s.
---
--- >>> showMethod GET
--- "GET"
--- >>> showMethod (CustomMethod "PATCH")
--- "PATCH"
-showMethod :: HTTPMethod -> String
-showMethod GET = "GET"
-showMethod POST = "POST"
-showMethod (CustomMethod t) = T.unpack t
 
 -- | Converts a Route to a URL. Drops any @Nothing@ values from the query, separates the
 --   fragments with "/" and tacks them onto the end of the base URL.

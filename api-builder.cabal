@@ -25,6 +25,7 @@ library
     bytestring == 0.10.*,
     either == 4.*,
     HTTP == 4000.*,
+    http-types == 0.8.*,
     http-conduit == 2.*,
     text == 1.*,
     transformers == 0.3.*
