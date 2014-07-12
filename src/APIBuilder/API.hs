@@ -1,9 +1,11 @@
 module APIBuilder.API (
   -- * API
     API
+  , APIT
   -- ** Running the API
   , runAPI
   , runRoute
+  , routeResponse
   , routeRequest
   -- ** Lifting
   , liftEither
@@ -28,6 +30,7 @@ import Control.Monad.IO.Class (MonadIO, liftIO)
 import Data.Aeson (FromJSON)
 import Data.Text (Text)
 import qualified Data.Text as T
+import Data.ByteString.Lazy (ByteString)
 import Network.HTTP.Conduit
 
 -- | Main API type. @s@ is the API's internal state, @e@ is the API's custom error type,
@@ -65,13 +68,19 @@ runAPI b s api = evalStateT (evalStateT (runEitherT api) b) s
 -- | Runs a @Route@. Infers the type to convert to from the JSON with the @a@ in @API@,
 --   and infers the error type from @e@.
 runRoute :: (FromJSON a, FromJSON e, MonadIO m) => Route -> APIT s e m a
-runRoute route = do
+runRoute route = routeResponse route >>= hoistEither . decode . responseBody
+
+
+-- | Runs a @Route@, but only returns the response and does nothing towards
+--   decoding the response.
+routeResponse :: (MonadIO m) => Route -> APIT s e m (Response ByteString)
+routeResponse route = do
   b <- liftBuilder get
   req <- hoistEither $ routeRequest b route `eitherOr` InvalidURLError
   resp <- do
     r <- liftIO $ try $ withManager (httpLbs req)
     hoistEither $ either (Left . HTTPError) Right r
-  hoistEither $ decode $ responseBody resp
+  return resp
 
 eitherOr :: Maybe a -> b -> Either b a
 a `eitherOr` b =
