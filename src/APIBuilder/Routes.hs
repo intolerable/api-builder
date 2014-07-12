@@ -21,13 +21,13 @@ type URLFragment = Text
 type URLParam = (Text, Maybe Text)
 
 -- | Convenience function for building @URLParam@s.
--- 
+--
 -- >>> "api_type" =. Just "json"
 -- ("api_type", Just "json")
 (=.) :: Text -> Maybe Text -> (Text, Maybe Text)
 (=.) = (,)
 
--- | Main type for routes in the API. Used to represent the URL minus the actual 
+-- | Main type for routes in the API. Used to represent the URL minus the actual
 --   endpoint URL as well as the query string and the HTTP method used to communicate
 --   with the server.
 data Route = Route { fragments :: [URLFragment]

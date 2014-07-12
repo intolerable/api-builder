@@ -38,13 +38,13 @@ instance FromJSON Questions where
   parseJSON _ = mempty
 ```
 
-Define a `Builder` for the API endpoint: 
+Define a `Builder` for the API endpoint:
 
 ```haskell
 stackOverflow :: Builder
 stackOverflow = basicBuilder "StackOverflow API" "http://api.stackexchange.com"
 ```
-    
+
 And the `Route` to use to get the data:
 
 ```haskell
@@ -55,7 +55,7 @@ answersRoute = Route { fragments = [ "2.2", "questions" ]
                                    , "site" =. Just "stackoverflow" ]
                      , httpMethod = GET }
 ```
-                         
+
 And a function to actually run the API:
 
 ```haskell

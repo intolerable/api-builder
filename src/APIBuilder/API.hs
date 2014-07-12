@@ -1,6 +1,6 @@
 module APIBuilder.API (
   -- * API
-    API 
+    API
   -- ** Running the API
   , runAPI
   , runRoute
@@ -46,12 +46,12 @@ liftBuilder :: StateT Builder (StateT s IO) a -> API s e a
 liftBuilder = lift
 
 -- | Lifts an action on an @API@'s state type @s@ to one that works on the @API@. Good
---   for messing with the state from inside the @API@. 
+--   for messing with the state from inside the @API@.
 liftState :: StateT s IO a -> API s e a
 liftState = lift . lift
 
 -- | Runs an @API@ by executing its transformer stack and dumping it all into @IO@.
-runAPI :: Builder -- ^ initial @Builder@ for the @API@ 
+runAPI :: Builder -- ^ initial @Builder@ for the @API@
        -> s -- ^ initial state @s@ for the @API@
        -> API s e a -- ^ the actual @API@ to run
        -> IO (Either (APIError e) a) -- ^ IO action that returns either an error or the result
@@ -65,19 +65,19 @@ runRoute route = do
   req <- hoistEither $ routeRequest b route `eitherOr` InvalidURLError
   resp <- do
     r <- liftIO $ try $ withManager (httpLbs req)
-    hoistEither $ either (Left . HTTPError) Right r 
+    hoistEither $ either (Left . HTTPError) Right r
   hoistEither $ decode $ responseBody resp
 
 eitherOr :: Maybe a -> b -> Either b a
 a `eitherOr` b =
-  case a of 
+  case a of
     Just x -> Right x
     Nothing -> Left b
 
 -- | Try to construct a @Request@ from a @Route@ (with the help of the @Builder@). Returns @Nothing@ if
 --   the URL is invalid or there is another error with the @Route@.
 routeRequest :: Builder -> Route -> Maybe Request
-routeRequest b route = 
+routeRequest b route =
   let initialURL = parseUrl (T.unpack $ routeURL (_baseURL b) (_customizeRoute b route)) in
   fmap (\url -> _customizeRequest b $ url { method = httpMethod route }) initialURL
 

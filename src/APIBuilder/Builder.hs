@@ -23,4 +23,4 @@ instance Show Builder where
 basicBuilder :: Text -- ^ name
              -> Text -- ^ base url
              -> Builder -- ^ a simple @Builder@
-basicBuilder n b = Builder n b id id 
+basicBuilder n b = Builder n b id id
