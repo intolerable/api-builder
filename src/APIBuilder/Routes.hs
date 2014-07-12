@@ -13,6 +13,8 @@ import qualified Data.Text as T
 import qualified Network.HTTP.Base as HTTP (urlEncodeVars)
 import qualified Network.HTTP.Types.Method as HTTP
 
+import APIBuilder.Query
+
 -- | Alias for @Text@ to store the URL fragments for each @Route@.
 type URLFragment = Text
 
@@ -20,12 +22,15 @@ type URLFragment = Text
 --   tacked onto the request.
 type URLParam = (Text, Maybe Text)
 
--- | Convenience function for building @URLParam@s.
+-- | Convenience function for building @URLParam@s. Right-hand argument must
+--   have a @ToQuery@ instance so it can be converted to the appropriate
+--   representation in a query string. Query values do not need to be
+--   escaped.
 --
--- >>> "api_type" =. Just "json"
+-- >>> "api_type" =. ("json" :: Text)
 -- ("api_type", Just "json")
-(=.) :: Text -> Maybe Text -> (Text, Maybe Text)
-(=.) = (,)
+(=.) :: ToQuery a => Text -> a -> (Text, Maybe Text)
+k =. v = (k, toQuery v)
 
 -- | Main type for routes in the API. Used to represent the URL minus the actual
 --   endpoint URL as well as the query string and the HTTP method used to communicate

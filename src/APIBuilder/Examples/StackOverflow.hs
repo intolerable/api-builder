@@ -34,9 +34,9 @@ stackOverflow = basicBuilder "StackOverflow API" "http://api.stackexchange.com"
 
 answersRoute :: Route
 answersRoute = Route { fragments = [ "2.2", "questions" ]
-                     , urlParams = [ "order" =. Just "desc"
-                                   , "sort" =. Just "activity"
-                                   , "site" =. Just "stackoverflow" ]
+                     , urlParams = [ "order" =. ("desc" :: Text)
+                                   , "sort" =. ("activity" :: Text)
+                                   , "site" =. ("stackoverflow" :: Text) ]
                      , httpMethod = "GET" }
 
 getAnswers :: IO (Either (APIError ()) Questions)
