@@ -6,8 +6,15 @@ import qualified Data.Text as Text
 class ToQuery a where
   toQuery :: a -> Maybe Text
 
-instance ToQuery String where
-  toQuery = Just . Text.pack
+instance ToQuery Integer where
+  toQuery = Just . Text.pack . show
+
+instance ToQuery Bool where
+  toQuery True = Just "true"
+  toQuery False = Just "false"
+
+instance ToQuery Int where
+  toQuery = Just . Text.pack . show
 
 instance ToQuery Text where
   toQuery = Just
