@@ -1,5 +1,6 @@
 module APIBuilder.Query where
 
+import Data.Maybe
 import Data.Text (Text)
 import qualified Data.Text as Text
 
@@ -22,3 +23,6 @@ instance ToQuery Text where
 instance ToQuery a => ToQuery (Maybe a) where
   toQuery (Just a) = toQuery a
   toQuery Nothing = Nothing
+
+instance ToQuery a => ToQuery [a] where
+  toQuery = Just . Text.intercalate "," . mapMaybe toQuery
