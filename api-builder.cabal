@@ -1,5 +1,5 @@
 name: api-builder
-version: 0.1.0.1
+version: 0.1.1.0
 synopsis: Library for easily building REST API wrappers in Haskell
 license: BSD3
 author: Fraser Murray
