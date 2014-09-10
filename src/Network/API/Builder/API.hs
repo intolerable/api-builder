@@ -70,7 +70,6 @@ runAPI b s api = evalStateT (evalStateT (runEitherT api) b) s
 runRoute :: (FromJSON a, FromJSON e, MonadIO m) => Route -> APIT s e m a
 runRoute route = routeResponse route >>= hoistEither . decode . responseBody
 
-
 -- | Runs a @Route@, but only returns the response and does nothing towards
 --   decoding the response.
 routeResponse :: (MonadIO m) => Route -> APIT s e m (Response ByteString)
