@@ -76,10 +76,9 @@ routeResponse :: (MonadIO m) => Route -> APIT s e m (Response ByteString)
 routeResponse route = do
   b <- liftBuilder get
   req <- hoistEither $ routeRequest b route `eitherOr` InvalidURLError
-  resp <- do
+  do
     r <- liftIO $ try $ withManager (httpLbs req)
     hoistEither $ either (Left . HTTPError) Right r
-  return resp
 
 eitherOr :: Maybe a -> b -> Either b a
 a `eitherOr` b =
