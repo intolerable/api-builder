@@ -1,8 +1,8 @@
-module APIBuilder.Builder
+module Network.API.Builder.Builder
   ( Builder(..)
   , basicBuilder ) where
 
-import APIBuilder.Routes
+import Network.API.Builder.Routes
 
 import Network.HTTP.Conduit (Request)
 import Data.Text (Text)

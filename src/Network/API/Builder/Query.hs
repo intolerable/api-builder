@@ -1,4 +1,4 @@
-module APIBuilder.Query where
+module Network.API.Builder.Query where
 
 import Data.Maybe
 import Data.Text (Text)

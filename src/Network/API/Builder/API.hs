@@ -1,4 +1,4 @@
-module APIBuilder.API (
+module Network.API.Builder.API (
   -- * API
     API
   , APIT
@@ -17,10 +17,10 @@ module APIBuilder.API (
   , customizeRoute
   , customizeRequest ) where
 
-import APIBuilder.Builder
-import APIBuilder.Decoding
-import APIBuilder.Error
-import APIBuilder.Routes
+import Network.API.Builder.Builder
+import Network.API.Builder.Decoding
+import Network.API.Builder.Error
+import Network.API.Builder.Routes
 
 import Control.Exception
 import Control.Monad.Trans.Either
