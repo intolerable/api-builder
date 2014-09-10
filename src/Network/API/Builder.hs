@@ -7,4 +7,5 @@ import Network.API.Builder.API as Exports
 import Network.API.Builder.Builder as Exports
 import Network.API.Builder.Decoding as Exports
 import Network.API.Builder.Error as Exports
+import Network.API.Builder.Query as Exports
 import Network.API.Builder.Routes as Exports
