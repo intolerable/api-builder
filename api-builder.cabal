@@ -11,14 +11,14 @@ cabal-version: >= 1.10
 
 library
   exposed-modules:
-    APIBuilder
-    APIBuilder.API
-    APIBuilder.Builder
-    APIBuilder.Decoding
-    APIBuilder.Error
-    APIBuilder.Examples.StackOverflow
-    APIBuilder.Query
-    APIBuilder.Routes
+    Network.API.Builder
+    Network.API.Builder.API
+    Network.API.Builder.Builder
+    Network.API.Builder.Decoding
+    Network.API.Builder.Error
+    Network.API.Builder.Examples.StackOverflow
+    Network.API.Builder.Query
+    Network.API.Builder.Routes
   build-depends:
     base >= 4.6 && < 4.8,
     aeson == 0.7.*,

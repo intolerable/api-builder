@@ -1,7 +1,7 @@
-module APIBuilder.Decoding
+module Network.API.Builder.Decoding
   ( decode ) where
 
-import APIBuilder.Error
+import Network.API.Builder.Error
 
 import Data.Aeson.Types (parseEither)
 import Data.Aeson.Parser (value)

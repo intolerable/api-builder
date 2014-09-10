@@ -1,4 +1,4 @@
-module APIBuilder.API (
+module Network.API.Builder.API (
   -- * API
     API
   , APIT
@@ -17,10 +17,10 @@ module APIBuilder.API (
   , customizeRoute
   , customizeRequest ) where
 
-import APIBuilder.Builder
-import APIBuilder.Decoding
-import APIBuilder.Error
-import APIBuilder.Routes
+import Network.API.Builder.Builder
+import Network.API.Builder.Decoding
+import Network.API.Builder.Error
+import Network.API.Builder.Routes
 
 import Control.Exception
 import Control.Monad.Trans.Either
@@ -70,17 +70,15 @@ runAPI b s api = evalStateT (evalStateT (runEitherT api) b) s
 runRoute :: (FromJSON a, FromJSON e, MonadIO m) => Route -> APIT s e m a
 runRoute route = routeResponse route >>= hoistEither . decode . responseBody
 
-
 -- | Runs a @Route@, but only returns the response and does nothing towards
 --   decoding the response.
 routeResponse :: (MonadIO m) => Route -> APIT s e m (Response ByteString)
 routeResponse route = do
   b <- liftBuilder get
   req <- hoistEither $ routeRequest b route `eitherOr` InvalidURLError
-  resp <- do
+  do
     r <- liftIO $ try $ withManager (httpLbs req)
     hoistEither $ either (Left . HTTPError) Right r
-  return resp
 
 eitherOr :: Maybe a -> b -> Either b a
 a `eitherOr` b =

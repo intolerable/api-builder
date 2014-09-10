@@ -1,8 +1,8 @@
 -- | Defines a basic example of API use - check the readme for more detail
 --   or check the tutorial at <https://github.com/intolerable/api-builder>
-module APIBuilder.Examples.StackOverflow where
+module Network.API.Builder.Examples.StackOverflow where
 
-import APIBuilder
+import Network.API.Builder
 import Control.Applicative
 import Data.Aeson
 import Data.Monoid (mempty)

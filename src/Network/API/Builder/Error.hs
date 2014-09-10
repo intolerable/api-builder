@@ -1,4 +1,4 @@
-module APIBuilder.Error
+module Network.API.Builder.Error
   ( APIError(..) ) where
 
 import Network.HTTP.Conduit (HttpException)

@@ -1,4 +1,4 @@
-module APIBuilder.Query where
+module Network.API.Builder.Query where
 
 import Data.Maybe
 import Data.Text (Text)
@@ -25,4 +25,5 @@ instance ToQuery a => ToQuery (Maybe a) where
   toQuery Nothing = Nothing
 
 instance ToQuery a => ToQuery [a] where
-  toQuery = Just . Text.intercalate "," . mapMaybe toQuery
+  toQuery [] = Nothing
+  toQuery xs = Just $ Text.intercalate "," $ mapMaybe toQuery xs

@@ -1,4 +1,4 @@
-module APIBuilder.Routes
+module Network.API.Builder.Routes
   ( Route(..)
   , URLFragment
   , URLParam
@@ -13,7 +13,7 @@ import qualified Data.Text as T
 import qualified Network.HTTP.Base as HTTP (urlEncodeVars)
 import qualified Network.HTTP.Types.Method as HTTP
 
-import APIBuilder.Query
+import Network.API.Builder.Query
 
 -- | Alias for @Text@ to store the URL fragments for each @Route@.
 type URLFragment = Text
