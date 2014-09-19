@@ -60,5 +60,5 @@ And a function to actually run the API:
 
 ```haskell
 getAnswers :: IO (Either (APIError ()) Questions)
-getAnswers = runAPI stackOverflow () $ runRoute answersRoute
+getAnswers = execAPI stackOverflow () $ runRoute answersRoute
 ```

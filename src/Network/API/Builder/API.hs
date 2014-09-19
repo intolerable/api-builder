@@ -3,6 +3,7 @@ module Network.API.Builder.API (
     API
   , APIT
   -- ** Running the API
+  , execAPI
   , runAPI
   , runRoute
   , routeResponse
@@ -57,13 +58,25 @@ liftBuilder = lift
 liftState :: Monad m => StateT s m a -> APIT s e m a
 liftState = lift . lift
 
--- | Runs an @API@ by executing its transformer stack and dumping it all into @IO@.
-runAPI :: MonadIO m
+-- | Runs an @API@ by executing its transformer stack and dumping it all into @IO@. Only returns the actual result.
+execAPI :: MonadIO m
        => Builder -- ^ initial @Builder@ for the @API@
        -> s -- ^ initial state @s@ for the @API@
        -> APIT s e m a -- ^ the actual @API@ to run
        -> m (Either (APIError e) a) -- ^ IO action that returns either an error or the result
-runAPI b s api = evalStateT (evalStateT (runEitherT api) b) s
+execAPI b s api = do
+  (res, _, _) <- runAPI b s api
+  return res
+
+-- | Runs an @API@ by executing its transformer stack and dumping it all into @IO@. Returns the actual result as well as the final states of the @Builder@ and custom state @s@.
+runAPI :: MonadIO m
+       => Builder -- ^ initial @Builder@ for the @API@
+       -> s -- ^ initial state @s@ for the @API@
+       -> APIT s e m a -- ^ the actual @API@ to run
+       -> m (Either (APIError e) a, Builder, s) -- ^ IO action that returns either an error or the result, as well as the final states
+runAPI b s api = do
+  ((res, b'), s') <- runStateT (runStateT (runEitherT api) b) s
+  return (res, b', s')
 
 -- | Runs a @Route@. Infers the type to convert to from the JSON with the @a@ in @API@,
 --   and infers the error type from @e@.

@@ -40,4 +40,4 @@ answersRoute = Route { fragments = [ "2.2", "questions" ]
                      , httpMethod = "GET" }
 
 getAnswers :: IO (Either (APIError ()) Questions)
-getAnswers = runAPI stackOverflow () $ runRoute answersRoute
+getAnswers = execAPI stackOverflow () $ runRoute answersRoute
