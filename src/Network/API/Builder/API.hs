@@ -9,6 +9,7 @@ module Network.API.Builder.API (
   , routeResponse
   , routeRequest
   -- ** Lifting
+  , liftManager
   , liftEither
   , liftBuilder
   , liftState
@@ -25,6 +26,7 @@ import Network.API.Builder.Routes
 
 import Control.Exception
 import Control.Monad.Trans.Either
+import Control.Monad.Trans.Reader
 import Control.Monad.Trans.State
 import Control.Monad.Trans.Class (lift)
 import Control.Monad.IO.Class (MonadIO, liftIO)
@@ -40,23 +42,26 @@ type API s e a = APIT s e IO a
 
 -- | Main API transformer type. @s@ is the API's internal state, @e@ is the API's custom error type,
 --   and @a@ is the result when the API runs.
-type APIT s e m a = EitherT (APIError e) (StateT Builder (StateT s m)) a
+type APIT s e m a = EitherT (APIError e) (ReaderT Manager (StateT Builder (StateT s m))) a
 
 -- | Lifts an action that works on an @API@ to an action that works on an @API@.
 --   This function is provided solely for future-proofing in the case that more transformers
 --   need to be stacked on top - it's implemented simply as @id@ for the moment.
-liftEither :: Monad m => EitherT (APIError e) (StateT Builder (StateT s m)) a -> APIT s e m a
+liftEither :: Monad m => EitherT (APIError e) (ReaderT Manager (StateT Builder (StateT s m))) a -> APIT s e m a
 liftEither = id
+
+liftManager :: Monad m => ReaderT Manager (StateT Builder (StateT s m)) a -> APIT s e m a
+liftManager = lift
 
 -- | Lifts an action that operates on a @Builder@ to one that works on an @API@. Useful
 --   mainly for gaining access to a @Builder@ from inside an @API@.
 liftBuilder :: Monad m => StateT Builder (StateT s m) a -> APIT s e m a
-liftBuilder = lift
+liftBuilder = lift . lift
 
 -- | Lifts an action on an @API@'s state type @s@ to one that works on the @API@. Good
 --   for messing with the state from inside the @API@.
 liftState :: Monad m => StateT s m a -> APIT s e m a
-liftState = lift . lift
+liftState = lift . lift . lift
 
 -- | Runs an @API@ by executing its transformer stack and dumping it all into @IO@. Only returns the actual result.
 execAPI :: MonadIO m
@@ -65,17 +70,20 @@ execAPI :: MonadIO m
        -> APIT s e m a -- ^ the actual @API@ to run
        -> m (Either (APIError e) a) -- ^ IO action that returns either an error or the result
 execAPI b s api = do
-  (res, _, _) <- runAPI b s api
+  m <- liftIO $ newManager conduitManagerSettings
+  (res, _, _) <- runAPI b m s api
+  liftIO $ closeManager m
   return res
 
 -- | Runs an @API@ by executing its transformer stack and dumping it all into @IO@. Returns the actual result as well as the final states of the @Builder@ and custom state @s@.
 runAPI :: MonadIO m
        => Builder -- ^ initial @Builder@ for the @API@
+       -> Manager -- ^ manager for working with conduit functions
        -> s -- ^ initial state @s@ for the @API@
        -> APIT s e m a -- ^ the actual @API@ to run
        -> m (Either (APIError e) a, Builder, s) -- ^ IO action that returns either an error or the result, as well as the final states
-runAPI b s api = do
-  ((res, b'), s') <- runStateT (runStateT (runEitherT api) b) s
+runAPI b m s api = do
+  ((res, b'), s') <- runStateT (runStateT (runReaderT (runEitherT api) m) b) s
   return (res, b', s')
 
 -- | Runs a @Route@. Infers the type to convert to from the JSON with the @a@ in @API@,
@@ -88,9 +96,10 @@ runRoute route = routeResponse route >>= hoistEither . decode . responseBody
 routeResponse :: (MonadIO m) => Route -> APIT s e m (Response ByteString)
 routeResponse route = do
   b <- liftBuilder get
+  m <- liftManager ask
   req <- hoistEither $ routeRequest b route `eitherOr` InvalidURLError
   do
-    r <- liftIO $ try $ withManager (httpLbs req)
+    r <- liftIO $ try $ httpLbs req m
     hoistEither $ either (Left . HTTPError) Right r
 
 eitherOr :: Maybe a -> b -> Either b a
