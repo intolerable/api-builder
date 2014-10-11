@@ -25,16 +25,16 @@ import Network.API.Builder.Error
 import Network.API.Builder.Routes
 
 import Control.Exception
+import Control.Monad.IO.Class (MonadIO, liftIO)
+import Control.Monad.Trans.Class (lift)
 import Control.Monad.Trans.Either
 import Control.Monad.Trans.Reader
 import Control.Monad.Trans.State
-import Control.Monad.Trans.Class (lift)
-import Control.Monad.IO.Class (MonadIO, liftIO)
 import Data.Aeson (FromJSON)
-import Data.Text (Text)
-import qualified Data.Text as T
 import Data.ByteString.Lazy (ByteString)
+import Data.Text (Text)
 import Network.HTTP.Conduit
+import qualified Data.Text as T
 
 -- | Main API type. @s@ is the API's internal state, @e@ is the API's custom error type,
 --   and @a@ is the result when the API runs. Based on the @APIT@ transformer.

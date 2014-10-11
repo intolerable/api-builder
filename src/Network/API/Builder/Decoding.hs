@@ -3,9 +3,9 @@ module Network.API.Builder.Decoding
 
 import Network.API.Builder.Error
 
-import Data.Aeson.Types (parseEither)
-import Data.Aeson.Parser (value)
 import Data.Aeson (FromJSON, parseJSON)
+import Data.Aeson.Parser (value)
+import Data.Aeson.Types (parseEither)
 import Data.Attoparsec.Lazy (parse, eitherResult)
 import qualified Data.ByteString.Lazy as BS
 
