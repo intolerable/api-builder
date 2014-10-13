@@ -15,3 +15,10 @@ data APIError a = APIError a -- ^ A type that represents any error that happens 
                                   --   @Builder@'s base URL and your @Route@s.
                 | ParseError String -- ^ Failed when parsing the response, and it wasn't an error on their end.
   deriving Show
+
+instance Eq a => Eq (APIError a) where
+  (HTTPError _) == _ = False
+  _ == (HTTPError _) = False
+  (APIError a) == (APIError b) = a == b
+  InvalidURLError == InvalidURLError = True
+  (ParseError a) == (ParseError b) = a == b
