@@ -9,8 +9,8 @@ module Network.API.Builder.API (
   , routeResponse
   , routeRequest
   -- ** Lifting
-  , liftManager
   , liftEither
+  , liftManager
   , liftBuilder
   , liftState
   -- ** Changing the @Builder@ within the API
@@ -50,6 +50,7 @@ type APIT s e m a = EitherT (APIError e) (ReaderT Manager (StateT Builder (State
 liftEither :: Monad m => EitherT (APIError e) (ReaderT Manager (StateT Builder (StateT s m))) a -> APIT s e m a
 liftEither = id
 
+-- | Lifts an action that works on a @Manager@ to one that works on an @API@.
 liftManager :: Monad m => ReaderT Manager (StateT Builder (StateT s m)) a -> APIT s e m a
 liftManager = lift
 

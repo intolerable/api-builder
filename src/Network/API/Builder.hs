@@ -1,11 +1,15 @@
--- | Exports a bunch of stuff. Check 'Network.API.Builder.API', 'Network.API.Builder.Builder',
---   'Network.API.Builder.Decoding', 'Network.API.Builder.Error', and 'Network.API.Builder.Routes'.
+-- | Entirely re-exports.
 module Network.API.Builder
-  ( module Exports ) where
+  ( module Network.API.Builder.API
+  , module Network.API.Builder.Builder
+  , module Network.API.Builder.Decoding
+  , module Network.API.Builder.Error
+  , module Network.API.Builder.Query
+  , module Network.API.Builder.Routes ) where
 
-import Network.API.Builder.API as Exports
-import Network.API.Builder.Builder as Exports
-import Network.API.Builder.Decoding as Exports
-import Network.API.Builder.Error as Exports
-import Network.API.Builder.Query as Exports
-import Network.API.Builder.Routes as Exports
+import Network.API.Builder.API
+import Network.API.Builder.Builder
+import Network.API.Builder.Decoding
+import Network.API.Builder.Error
+import Network.API.Builder.Query
+import Network.API.Builder.Routes
