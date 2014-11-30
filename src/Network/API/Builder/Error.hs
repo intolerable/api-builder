@@ -22,3 +22,4 @@ instance Eq a => Eq (APIError a) where
   (APIError a) == (APIError b) = a == b
   InvalidURLError == InvalidURLError = True
   (ParseError a) == (ParseError b) = a == b
+  _ == _ = False
