@@ -25,6 +25,9 @@ instance FromJSON Question where
              <*> o .: "tags"
   parseJSON _ = mempty
 
+instance Receivable Questions where
+  receive = useFromJSON
+
 instance FromJSON Questions where
   parseJSON (Object o) = Questions <$> o .: "items"
   parseJSON _ = mempty
