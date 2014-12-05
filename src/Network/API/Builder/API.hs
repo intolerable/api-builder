@@ -20,21 +20,21 @@ module Network.API.Builder.API (
   , customizeRequest ) where
 
 import Network.API.Builder.Builder
-import Network.API.Builder.Decoding
 import Network.API.Builder.Error
+import Network.API.Builder.Receive
 import Network.API.Builder.Routes
+import Network.API.Builder.Send
 
+import Data.Bifunctor
 import Control.Exception
 import Control.Monad.IO.Class (MonadIO, liftIO)
 import Control.Monad.Trans.Class (lift)
 import Control.Monad.Trans.Either
 import Control.Monad.Trans.Reader
 import Control.Monad.Trans.State
-import Data.Aeson (FromJSON)
 import Data.ByteString.Lazy (ByteString)
 import Data.Text (Text)
 import Network.HTTP.Conduit
-import qualified Data.Text as T
 
 -- | Main API type. @s@ is the API's internal state, @e@ is the API's custom error type,
 --   and @a@ is the result when the API runs. Based on the @APIT@ transformer.
@@ -89,19 +89,13 @@ runAPI b m s api = do
 
 -- | Runs a @Route@. Infers the type to convert to from the JSON with the @a@ in @API@,
 --   and infers the error type from @e@.
-runRoute :: (FromJSON a, FromJSON e, MonadIO m) => Route -> APIT s e m a
-runRoute route = routeResponse route >>= hoistEither . decode . responseBody
+runRoute :: (Receivable a, ErrorReceivable e, MonadIO m) => Route -> APIT s e m a
+runRoute = nonsenseRun ()
 
 -- | Runs a @Route@, but only returns the response and does nothing towards
 --   decoding the response.
-routeResponse :: (MonadIO m) => Route -> APIT s e m (Response ByteString)
-routeResponse route = do
-  b <- liftBuilder get
-  m <- liftManager ask
-  req <- hoistEither $ routeRequest b route `eitherOr` InvalidURLError
-  do
-    r <- liftIO $ try $ httpLbs req m
-    hoistEither $ either (Left . HTTPError) Right r
+routeResponse :: (MonadIO m, ErrorReceivable e) => Route -> APIT s e m (Response ByteString)
+routeResponse = nonsenseRun ()
 
 eitherOr :: Maybe a -> b -> Either b a
 a `eitherOr` b =
@@ -109,12 +103,19 @@ a `eitherOr` b =
     Just x -> Right x
     Nothing -> Left b
 
+nonsenseRun :: (MonadIO m, Sendable t, ErrorReceivable e, Receivable r) => t -> Route -> APIT s e m r
+nonsenseRun s r = do
+  builder <- liftBuilder get
+  manager <- liftManager ask
+  req <- hoistEither $ send builder r s `eitherOr` InvalidURLError
+  response <- liftIO $ try $ httpLbs req manager
+  res <- hoistEither $ first HTTPError response
+  hoistEither $ receive res
+
 -- | Try to construct a @Request@ from a @Route@ (with the help of the @Builder@). Returns @Nothing@ if
 --   the URL is invalid or there is another error with the @Route@.
 routeRequest :: Builder -> Route -> Maybe Request
-routeRequest b route =
-  let initialURL = parseUrl (T.unpack $ routeURL (_baseURL b) (_customizeRoute b route)) in
-  fmap (\url -> _customizeRequest b $ url { method = httpMethod route }) initialURL
+routeRequest b route = send b route ()
 
 -- | Modify the @name@ of the @Builder@ from inside an API. Using this is probably not the best idea,
 --   it's nice if the @Builder@'s name is stable at least.
