@@ -22,8 +22,8 @@ library
     Network.API.Builder.Send
   build-depends:
     base >= 4.6 && < 4.8,
-    aeson == 0.7.*,
-    attoparsec == 0.11.*,
+    aeson >= 0.7 && < 0.9,
+    attoparsec >= 0.11 && < 0.13,
     bifunctors,
     bytestring == 0.10.*,
     either == 4.*,
@@ -31,7 +31,7 @@ library
     http-types == 0.8.*,
     http-conduit == 2.*,
     text == 1.*,
-    transformers == 0.3.*
+    transformers >= 0.3 && < 0.5
   hs-source-dirs: src/
   default-language: Haskell2010
   default-extensions:
