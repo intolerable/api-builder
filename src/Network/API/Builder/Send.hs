@@ -21,7 +21,8 @@ instance Sendable Value where
     case httpMethod r of
       "POST" -> do
         req <- send builder r ()
-        return $ req { requestBody = RequestBodyLBS (encode value) }
+        return $ req { requestBody = RequestBodyLBS (encode value)
+                     , requestHeaders = ("Content-Type", "application/json") : requestHeaders req }
       _ -> Nothing
 
 instance Sendable ByteString where
