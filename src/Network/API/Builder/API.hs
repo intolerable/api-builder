@@ -6,6 +6,7 @@ module Network.API.Builder.API (
   , execAPI
   , runAPI
   , runRoute
+  , sendRoute
   , routeResponse
   , routeRequest
   -- ** Lifting
@@ -90,12 +91,12 @@ runAPI b m s api = do
 -- | Runs a @Route@. Infers the type to convert to from the JSON with the @a@ in @API@,
 --   and infers the error type from @e@.
 runRoute :: (Receivable a, ErrorReceivable e, MonadIO m) => Route -> APIT s e m a
-runRoute = nonsenseRun ()
+runRoute = sendRoute ()
 
 -- | Runs a @Route@, but only returns the response and does nothing towards
 --   decoding the response.
 routeResponse :: (MonadIO m, ErrorReceivable e) => Route -> APIT s e m (Response ByteString)
-routeResponse = nonsenseRun ()
+routeResponse = sendRoute ()
 
 eitherOr :: Maybe a -> b -> Either b a
 a `eitherOr` b =
@@ -103,8 +104,8 @@ a `eitherOr` b =
     Just x -> Right x
     Nothing -> Left b
 
-nonsenseRun :: (MonadIO m, Sendable t, ErrorReceivable e, Receivable r) => t -> Route -> APIT s e m r
-nonsenseRun s r = do
+sendRoute :: (MonadIO m, Sendable t, ErrorReceivable e, Receivable r) => t -> Route -> APIT s e m r
+sendRoute s r = do
   builder <- liftBuilder get
   manager <- liftManager ask
   req <- hoistEither $ send builder r s `eitherOr` InvalidURLError
