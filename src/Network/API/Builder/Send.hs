@@ -18,7 +18,7 @@ instance Sendable () where
       "POST" -> do
         req <- parseUrl $ Text.unpack $ routeURL (_baseURL builder) (_customizeRoute builder r)
         return $ _customizeRequest builder $
-          req { requestHeaders = ("Content-Type", "application/x-www-form-urlencoded") : (requestHeaders req)
+          req { requestHeaders = ("Content-Type", "application/x-www-form-urlencoded") : requestHeaders req
               , requestBody = RequestBodyBS (dropQuestion $ queryString req)
               , queryString = ""
               , method = httpMethod r }
