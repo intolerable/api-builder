@@ -1,29 +1,29 @@
 module Network.API.Builder.Query where
 
-import Data.Maybe
 import Data.Text (Text)
 import qualified Data.Text as Text
 
 class ToQuery a where
-  toQuery :: a -> Maybe Text
+  toQuery :: Text -> a -> [(Text, Text)]
 
 instance ToQuery Integer where
-  toQuery = Just . Text.pack . show
+  toQuery k v = [(k, Text.pack $ show v)]
 
 instance ToQuery Bool where
-  toQuery True = Just "true"
-  toQuery False = Just "false"
+  toQuery k True = [(k, "true")]
+  toQuery k False = [(k, "false")]
 
 instance ToQuery Int where
-  toQuery = Just . Text.pack . show
+  toQuery k v = [(k, Text.pack $ show v)]
 
 instance ToQuery Text where
-  toQuery = Just
+  toQuery k v = [(k, v)]
 
 instance ToQuery a => ToQuery (Maybe a) where
-  toQuery (Just a) = toQuery a
-  toQuery Nothing = Nothing
+  toQuery k (Just a) = toQuery k a
+  toQuery _ Nothing = []
 
 instance ToQuery a => ToQuery [a] where
-  toQuery [] = Nothing
-  toQuery xs = Just $ Text.intercalate "," $ mapMaybe toQuery xs
+  toQuery _ [] = []
+  toQuery k xs = [(k, Text.intercalate "," $ map snd $ toQuery k xs)]
+

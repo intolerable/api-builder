@@ -20,7 +20,7 @@ type URLFragment = Text
 
 -- | Alias to @(Text, Maybe Text)@ used to store each query that gets
 --   tacked onto the request.
-type URLParam = (Text, Maybe Text)
+type URLParam = [(Text, Text)]
 
 -- | Convenience function for building @URLParam@s. Right-hand argument must
 --   have a @ToQuery@ instance so it can be converted to the appropriate
@@ -29,8 +29,8 @@ type URLParam = (Text, Maybe Text)
 --
 -- >>> "api_type" =. ("json" :: Text)
 -- ("api_type", Just "json")
-(=.) :: ToQuery a => Text -> a -> (Text, Maybe Text)
-k =. v = (k, toQuery v)
+(=.) :: ToQuery a => Text -> a -> [(Text, Text)]
+k =. v = toQuery k v
 
 -- | Main type for routes in the API. Used to represent the URL minus the actual
 --   endpoint URL as well as the query string and the HTTP method used to communicate
@@ -54,8 +54,4 @@ pathParamsSep [] = "?"
 pathParamsSep xs = if T.isInfixOf "." (last xs) then "?" else "/?"
 
 buildParams :: [URLParam] -> Text
-buildParams = T.pack . HTTP.urlEncodeVars . map (T.unpack *** T.unpack) . mapMaybe collectParams
-
-collectParams :: URLParam -> Maybe (Text, Text)
-collectParams (a, Just x) = Just (a,x)
-collectParams (_, Nothing) = Nothing
+buildParams = T.pack . HTTP.urlEncodeVars . concatMap (map (T.unpack *** T.unpack))
