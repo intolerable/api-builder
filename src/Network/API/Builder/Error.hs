@@ -17,8 +17,6 @@ data APIError a = APIError a -- ^ A type that represents any error that happens 
   deriving Show
 
 instance Eq a => Eq (APIError a) where
-  (HTTPError _) == _ = False
-  _ == (HTTPError _) = False
   (APIError a) == (APIError b) = a == b
   InvalidURLError == InvalidURLError = True
   (ParseError a) == (ParseError b) = a == b
