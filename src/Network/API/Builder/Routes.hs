@@ -6,7 +6,6 @@ module Network.API.Builder.Routes
   , routeURL ) where
 
 import Control.Arrow ((***))
-import Data.Maybe (mapMaybe)
 import Data.Monoid ((<>))
 import Data.Text (Text)
 import qualified Data.Text as T
