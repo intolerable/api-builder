@@ -26,10 +26,3 @@ instance ToQuery a => ToQuery (Maybe a) where
 instance ToQuery a => ToQuery [a] where
   toQuery _ [] = []
   toQuery k xs = [(k, Text.intercalate "," $ map snd $ toQuery k xs)]
-
-newtype ArrayList a = ArrayList [a]
-
-instance ToQuery a => ToQuery (ArrayList a) where
-  toQuery _ (ArrayList []) = []
-  toQuery k (ArrayList xs) = for (zip [1..] xs) $ \(n, x) ->
-    (k <> "[" <> tshow n <> "]", x)
