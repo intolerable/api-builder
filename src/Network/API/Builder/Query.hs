@@ -25,4 +25,4 @@ instance ToQuery a => ToQuery (Maybe a) where
 
 instance ToQuery a => ToQuery [a] where
   toQuery _ [] = []
-  toQuery k xs = [(k, Text.intercalate "," $ map snd $ toQuery k xs)]
+  toQuery k xs = [(k, Text.intercalate "," $ map snd $ concatMap (toQuery k) xs)]
