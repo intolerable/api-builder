@@ -36,7 +36,7 @@ stackOverflow :: Builder
 stackOverflow = basicBuilder "StackOverflow API" "http://api.stackexchange.com"
 
 answersRoute :: Route
-answersRoute = Route { fragments = [ "2.2", "questions" ]
+answersRoute = Route { urlPieces = [ "2.2", "questions" ]
                      , urlParams = [ "order" =. ("desc" :: Text)
                                    , "sort" =. ("activity" :: Text)
                                    , "site" =. ("stackoverflow" :: Text) ]

@@ -49,7 +49,7 @@ And the `Route` to use to get the data:
 
 ```haskell
 answersRoute :: Route
-answersRoute = Route { fragments = [ "2.2", "questions" ]
+answersRoute = Route { urlPieces = [ "2.2", "questions" ]
                      , urlParams = [ "order" =. Just "desc"
                                    , "sort" =. Just "activity"
                                    , "site" =. Just "stackoverflow" ]

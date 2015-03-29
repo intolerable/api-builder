@@ -1,6 +1,6 @@
 module Network.API.Builder.Routes
   ( Route(..)
-  , URLFragment
+  , URLPiece
   , URLParam
   , (=.)
   , routeURL ) where
@@ -15,7 +15,7 @@ import qualified Network.HTTP.Types.Method as HTTP
 import Network.API.Builder.Query
 
 -- | Alias for @Text@ to store the URL fragments for each @Route@.
-type URLFragment = Text
+type URLPiece = Text
 
 -- | Alias to @(Text, Maybe Text)@ used to store each query that gets
 --   tacked onto the request.
@@ -34,7 +34,7 @@ k =. v = toQuery k v
 -- | Main type for routes in the API. Used to represent the URL minus the actual
 --   endpoint URL as well as the query string and the HTTP method used to communicate
 --   with the server.
-data Route = Route { fragments :: [URLFragment]
+data Route = Route { urlPieces :: [URLPiece]
                    , urlParams :: [URLParam]
                    , httpMethod :: HTTP.Method }
   deriving (Show, Read, Eq)
@@ -48,7 +48,7 @@ routeURL baseURL (Route fs ps _) =
   let path = T.intercalate "/" fs
   in baseURL <> "/" <> path <> pathParamsSep fs <> buildParams ps
 
-pathParamsSep :: [URLFragment] -> Text
+pathParamsSep :: [URLPiece] -> Text
 pathParamsSep [] = "?"
 pathParamsSep xs = if T.isInfixOf "." (last xs) then "?" else "/?"
 
