@@ -2,6 +2,7 @@ module Network.API.Builder.Receive where
 
 import Network.API.Builder.Error
 
+import Control.Applicative
 import Data.Aeson hiding (decode, eitherDecode)
 import Data.Aeson.Parser
 import Data.Aeson.Types (parseEither)
@@ -20,6 +21,18 @@ instance Receivable (Response ByteString) where
 
 instance Receivable Value where
   receive = useFromJSON
+
+instance (Receivable a, Receivable b) => Receivable (a, b) where
+  receive x = (,) <$> receive x <*> receive x
+
+instance (Receivable a, Receivable b, Receivable c) => Receivable (a, b, c) where
+  receive x = (,,) <$> receive x <*> receive x <*> receive x
+
+instance (Receivable a, Receivable b, Receivable c, Receivable d) => Receivable (a, b, c, d) where
+  receive x = (,,,) <$> receive x <*> receive x <*> receive x <*> receive x
+
+instance (Receivable a, Receivable b, Receivable c, Receivable d, Receivable e) => Receivable (a, b, c, d, e) where
+  receive x = (,,,,) <$> receive x <*> receive x <*> receive x <*> receive x <*> receive x
 
 useFromJSON :: (FromJSON a, ErrorReceivable e) => Response ByteString -> Either (APIError e) a
 useFromJSON resp =
