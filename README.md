@@ -61,4 +61,7 @@ And a function to actually run the API:
 ```haskell
 getAnswers :: IO (Either (APIError ()) Questions)
 getAnswers = execAPI stackOverflow () $ runRoute answersRoute
+
+> getAnswers
+Right (Questions [Question {title = "Using parse API with codeigniter", isAnswered = True, score = 2, tags = ["php","codeigniter","parse.com","codeigniter-2","php-5.6"]},Question {title = "Object...
 ```
