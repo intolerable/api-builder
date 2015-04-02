@@ -45,8 +45,12 @@ routeURL :: Text -- ^ base URL for the @Route@ (you can usually get this from th
          -> Route -- ^ the @Route@ to process
          -> Text -- ^ the finalized URL as a @Text@
 routeURL baseURL (Route fs ps _) =
-  let path = T.intercalate "/" fs
-  in baseURL <> "/" <> path <> pathParamsSep fs <> buildParams ps
+  baseURL <> firstSep <> path <> querySep <> buildParams ps
+  where
+    firstSep = if null fs then T.empty else "/"
+    path = T.intercalate "/" fs
+    querySep = if null ps then T.empty else pathParamsSep fs
+
 
 pathParamsSep :: [URLPiece] -> Text
 pathParamsSep [] = "?"
