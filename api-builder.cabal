@@ -4,10 +4,20 @@ synopsis: Library for easily building REST API wrappers in Haskell
 license: BSD3
 author: Fraser Murray
 maintainer: fraser.m.murray@gmail.com
+homepage: https://github.com/intolerable/api-builder
 copyright: (c) Fraser Murray 2014
 category: Network
 build-type: Simple
 cabal-version: >= 1.10
+
+source-repository head
+  type: git
+  location: git://github.com/intolerable/api-builder.git
+
+source-repository this
+  type: git
+  location: git://github.com/intolerable/api-builder.git
+  tag: v0.5.0.0
 
 library
   exposed-modules:
