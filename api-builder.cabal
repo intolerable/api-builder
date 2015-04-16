@@ -2,6 +2,7 @@ name: api-builder
 version: 0.7.0.0
 synopsis: Library for easily building REST API wrappers in Haskell
 license: BSD3
+license-file: LICENSE
 author: Fraser Murray
 maintainer: fraser.m.murray@gmail.com
 homepage: https://github.com/intolerable/api-builder
