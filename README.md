@@ -1,7 +1,6 @@
 # api-builder
 
-
-Simple library for building JSON API wrappers in Haskell – define a `Builder`, add some types with `FromJSON` instances, an error type, and some routes, and you can easily use your API from Haskell code. Based on a `EitherT StateT StateT` monad transformer stack.
+Simple library for building API wrappers in Haskell – define a `Builder`, add some types with `Receivable` instances, an error type, and some routes, and you can easily use any API from Haskell code. Based on a `EitherT StateT StateT` monad transformer stack.
 
 ### Stack Overflow example
 
@@ -36,6 +35,13 @@ instance FromJSON Question where
 instance FromJSON Questions where
   parseJSON (Object o) = Questions <$> o .: "items"
   parseJSON _ = mempty
+```
+
+and a `Receivable` instance for `Questions` that just uses the `FromJSON` instance:
+
+```haskell
+instance Receivable Questions where
+  receive = useFromJSON
 ```
 
 Define a `Builder` for the API endpoint:
