@@ -40,7 +40,7 @@ library
     bytestring == 0.10.*,
     either == 4.*,
     HTTP == 4000.*,
-    http-client >= 0.4.7 && < 0.4.10,
+    http-client == 0.4.7.* || == 0.4.11.*,
     http-conduit == 2.*,
     http-types == 0.8.*,
     text == 1.*,
