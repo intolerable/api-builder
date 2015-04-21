@@ -1,5 +1,5 @@
 name: api-builder
-version: 0.7.0.1
+version: 0.7.1.0
 synopsis: Library for easily building REST API wrappers in Haskell
 license: BSD3
 license-file: LICENSE
@@ -18,7 +18,7 @@ source-repository head
 source-repository this
   type: git
   location: git://github.com/intolerable/api-builder.git
-  tag: v0.7.0.1
+  tag: v0.7.1.0
 
 library
   exposed-modules:
