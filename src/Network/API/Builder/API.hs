@@ -72,7 +72,7 @@ execAPI :: MonadIO m
        -> APIT s e m a -- ^ the actual @API@ to run
        -> m (Either (APIError e) a) -- ^ IO action that returns either an error or the result
 execAPI b s api = do
-  m <- liftIO $ newManager conduitManagerSettings
+  m <- liftIO $ newManager $ mkManagerSettings (TLSSettingsSimple True False False) Nothing
   (res, _, _) <- runAPI b m s api
   liftIO $ closeManager m
   return res
