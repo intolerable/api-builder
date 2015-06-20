@@ -70,7 +70,7 @@ test-suite test
     http-conduit,
     text,
     transformers
-  GHC-options: -Wall -Werror
+  GHC-options: -Wall
 
 test-suite test-io
   hs-source-dirs: test-io
@@ -89,4 +89,4 @@ test-suite test-io
     hspec,
     text,
     transformers
-  GHC-options: -Wall -Werror
+  GHC-options: -Wall
