@@ -14,6 +14,7 @@ data APIError a = APIError a -- ^ A type that represents any error that happens 
                 | InvalidURLError -- ^ You're trying to create an invalid URL somewhere - check your
                                   --   @Builder@'s base URL and your @Route@s.
                 | ParseError String -- ^ Failed when parsing the response, and it wasn't an error on their end.
+                | EmptyError -- ^ Empty error to serve as a zero element for Monoid.
   deriving Show
 
 instance Eq a => Eq (APIError a) where
@@ -21,3 +22,8 @@ instance Eq a => Eq (APIError a) where
   InvalidURLError == InvalidURLError = True
   (ParseError a) == (ParseError b) = a == b
   _ == _ = False
+
+instance Monoid (APIError a) where
+  mempty = EmptyError
+  EmptyError `mappend` x = x
+  x `mappend` _ = x
