@@ -31,9 +31,11 @@ instance Sendable Value where
   send builder r value =
     case httpMethod r of
       "POST" -> do
-        req <- send builder r ()
-        return $ req { requestBody = RequestBodyLBS (encode value)
-                     , requestHeaders = ("Content-Type", "application/json") : requestHeaders req }
+        req <- parseUrl $ Text.unpack $ routeURL (_baseURL builder) (_customizeRoute builder r)
+        return $ _customizeRequest builder $
+          req { requestBody = RequestBodyLBS (encode value)
+              , requestHeaders = ("Content-Type", "application/json") : requestHeaders req
+              , method = httpMethod r }
       _ -> Nothing
 
 instance Sendable ByteString where
