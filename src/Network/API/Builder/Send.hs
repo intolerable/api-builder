@@ -22,10 +22,13 @@ instance Sendable () where
               , requestBody = RequestBodyBS (dropQuestion $ queryString req)
               , queryString = ""
               , method = httpMethod r }
-      _ -> do
-        req <- parseUrl $ Text.unpack $ routeURL (_baseURL builder) (_customizeRoute builder r)
-        return $ _customizeRequest builder $ req { method = httpMethod r }
+      _ -> basicSend builder r
     where dropQuestion b = if ByteString.isPrefixOf "?" b then ByteString.drop 1 b else b
+
+basicSend :: Builder -> Route -> Maybe Request
+basicSend builder r = do
+  req <- parseUrl $ Text.unpack $ routeURL (_baseURL builder) (_customizeRoute builder r)
+  return $ _customizeRequest builder $ req { method = httpMethod r }
 
 instance Sendable Value where
   send builder r value =
@@ -42,6 +45,12 @@ instance Sendable ByteString where
   send builder r bs =
     case httpMethod r of
       "POST" -> do
-        req <- send builder r ()
+        req <- basicSend builder r
         return $ req { requestBody = RequestBodyLBS bs }
       _ -> Nothing
+
+data PostQuery = PostQuery
+  deriving (Show)
+
+instance Sendable PostQuery where
+  send builder r PostQuery = basicSend builder r
