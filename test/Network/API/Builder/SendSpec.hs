@@ -5,6 +5,7 @@ import Network.API.Builder.Routes
 import Network.API.Builder.Send
 
 import Data.Aeson
+import Data.ByteString.Lazy (ByteString)
 import qualified Network.HTTP.Conduit as HTTP
 import Test.Hspec
 
@@ -77,6 +78,21 @@ spec = do
             HTTP.path req `shouldBe` "/api.json"
             case HTTP.requestBody req of
               HTTP.RequestBodyLBS "{\"hello\":null}" -> return ()
+              _ -> expectationFailure "incorrect POST body"
+          Nothing -> expectationFailure "req construction failed"
+
+    describe "ByteString" $ do
+      it "should be able to construct a POST request with the correct ByteString body" $ do
+        case send exampleBuilder (Route ["api.json"] ["query" =. False] "POST") ("hello world" :: ByteString) of
+          Just req -> do
+            HTTP.secure req `shouldBe` True
+            HTTP.host req `shouldBe` "example.com"
+            HTTP.method req `shouldBe` "POST"
+            HTTP.port req `shouldBe` 443
+            HTTP.queryString req `shouldBe` "?query=false"
+            HTTP.path req `shouldBe` "/api.json"
+            case HTTP.requestBody req of
+              HTTP.RequestBodyLBS "hello world" -> return ()
               _ -> expectationFailure "incorrect POST body"
           Nothing -> expectationFailure "req construction failed"
 
