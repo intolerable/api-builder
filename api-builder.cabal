@@ -38,7 +38,6 @@ library
     attoparsec >= 0.11 && < 0.13,
     bifunctors >= 4.0 && < 6.0,
     bytestring == 0.10.*,
-    either == 4.*,
     HTTP == 4000.*,
     http-client == 0.4.7.* || == 0.4.11.*,
     http-conduit == 2.*,

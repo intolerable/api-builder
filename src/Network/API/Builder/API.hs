@@ -10,6 +10,7 @@ module Network.API.Builder.API (
   , routeResponse
   , routeRequest
   -- ** Lifting
+  , liftExcept
   , liftEither
   , liftManager
   , liftBuilder
@@ -30,7 +31,7 @@ import Data.Bifunctor
 import Control.Exception
 import Control.Monad.IO.Class (MonadIO, liftIO)
 import Control.Monad.Trans.Class (lift)
-import Control.Monad.Trans.Either
+import Control.Monad.Trans.Except
 import Control.Monad.Trans.Reader
 import Control.Monad.Trans.State
 import Data.ByteString.Lazy (ByteString)
@@ -43,12 +44,17 @@ type API s e a = APIT s e IO a
 
 -- | Main API transformer type. @s@ is the API's internal state, @e@ is the API's custom error type,
 --   and @a@ is the result when the API runs.
-type APIT s e m a = EitherT (APIError e) (ReaderT Manager (StateT Builder (StateT s m))) a
+type APIT s e m a = ExceptT (APIError e) (ReaderT Manager (StateT Builder (StateT s m))) a
 
 -- | Lifts an action that works on an @API@ to an action that works on an @API@.
 --   This function is provided solely for future-proofing in the case that more transformers
 --   need to be stacked on top - it's implemented simply as @id@ for the moment.
-liftEither :: Monad m => EitherT (APIError e) (ReaderT Manager (StateT Builder (StateT s m))) a -> APIT s e m a
+liftExcept :: Monad m => ExceptT (APIError e) (ReaderT Manager (StateT Builder (StateT s m))) a -> APIT s e m a
+liftExcept = id
+
+{-# DEPRECATED liftEither "Use liftExcept" #-}
+-- | Identical to 'liftExcept', provided for (almost) compatibility.
+liftEither :: Monad m => ExceptT (APIError e) (ReaderT Manager (StateT Builder (StateT s m))) a -> APIT s e m a
 liftEither = id
 
 -- | Lifts an action that works on a @Manager@ to one that works on an @API@.
@@ -86,7 +92,7 @@ runAPI :: MonadIO m
        -> APIT s e m a -- ^ the actual @API@ to run
        -> m (Either (APIError e) a, Builder, s) -- ^ IO action that returns either an error or the result, as well as the final states
 runAPI b m s api = do
-  ((res, b'), s') <- runStateT (runStateT (runReaderT (runEitherT api) m) b) s
+  ((res, b'), s') <- runStateT (runStateT (runReaderT (runExceptT api) m) b) s
   return (res, b', s')
 
 -- | Runs a @Route@. Infers the type to convert to from the JSON with the @a@ in @API@,
@@ -109,10 +115,10 @@ sendRoute :: (MonadIO m, Sendable t, ErrorReceivable e, Receivable r) => t -> Ro
 sendRoute s r = do
   builder <- liftBuilder get
   manager <- liftManager ask
-  req <- hoistEither $ send builder r s `eitherOr` InvalidURLError
+  req <- ExceptT $ return $ send builder r s `eitherOr` InvalidURLError
   response <- liftIO $ try $ httpLbs req manager
-  res <- hoistEither $ first HTTPError response
-  hoistEither $ receive res
+  res <- ExceptT $ return $ first HTTPError response
+  ExceptT $ return $ receive res
 
 -- | Try to construct a @Request@ from a @Route@ (with the help of the @Builder@). Returns @Nothing@ if
 --   the URL is invalid or there is another error with the @Route@.
