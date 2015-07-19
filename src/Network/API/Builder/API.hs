@@ -77,7 +77,8 @@ execAPI b s api = do
   liftIO $ closeManager m
   return res
 
--- | Runs an @API@ by executing its transformer stack and dumping it all into @IO@. Returns the actual result as well as the final states of the @Builder@ and custom state @s@.
+-- | Runs an @API@ by executing its transformer stack and dumping it all into @IO@.
+-- | Returns the actual result as well as the final states of the @Builder@ and custom state @s@.
 runAPI :: MonadIO m
        => Builder -- ^ initial @Builder@ for the @API@
        -> Manager -- ^ manager for working with conduit functions
