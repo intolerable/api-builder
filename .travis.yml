@@ -5,3 +5,5 @@ ghc:
   # disabled because travis doesn't yet support it
   # - "7.10"
 sudo: false
+notifications:
+  email: false
