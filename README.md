@@ -1,4 +1,4 @@
-# api-builder
+# api-builder [![Build Status](https://travis-ci.org/intolerable/api-builder.svg?branch=master)](https://travis-ci.org/intolerable/api-builder)
 
 Simple library for building API wrappers in Haskell – define a `Builder`, add some types with `Receivable` instances, an error type, and some routes, and you can easily use any API from Haskell code. Based on a `EitherT StateT StateT` monad transformer stack.
 
