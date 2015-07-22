@@ -3,6 +3,7 @@ module Network.API.Builder.Error
 
 import Data.Monoid
 import Network.HTTP.Client (HttpException)
+import Prelude
 
 -- | Error type for the @API@, where @a@ is the type that should be returned when
 --   something goes wrong on the other end - i.e. any error that isn't directly related

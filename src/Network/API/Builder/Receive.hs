@@ -3,11 +3,10 @@ module Network.API.Builder.Receive where
 import Network.API.Builder.Error
 
 import Control.Applicative
-import Data.Aeson hiding (decode)
-import Data.Aeson.Parser
-import Data.Aeson.Types (parseEither)
+import Data.Aeson
 import Data.ByteString.Lazy (ByteString)
 import Network.HTTP.Client
+import Prelude
 
 class Receivable r where
   receive :: ErrorReceivable e => Response ByteString -> Either (APIError e) r
