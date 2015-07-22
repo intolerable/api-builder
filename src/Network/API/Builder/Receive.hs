@@ -3,10 +3,9 @@ module Network.API.Builder.Receive where
 import Network.API.Builder.Error
 
 import Control.Applicative
-import Data.Aeson hiding (decode, eitherDecode)
+import Data.Aeson hiding (decode)
 import Data.Aeson.Parser
 import Data.Aeson.Types (parseEither)
-import Data.Attoparsec.Lazy (parse, eitherResult)
 import Data.ByteString.Lazy (ByteString)
 import Network.HTTP.Conduit
 
@@ -60,9 +59,6 @@ useErrorFromJSON resp =
   case eitherDecode (responseBody resp) of
     Right x -> Just x
     Left _ -> Nothing
-
-eitherDecode :: FromJSON a => ByteString -> Either String a
-eitherDecode s = eitherResult (parse value s) >>= parseEither parseJSON
 
 newtype JSONResponse a = JSONResponse { unwrapJSON :: a }
   deriving (Show, Read, Eq, Ord)
