@@ -5,7 +5,7 @@ import Network.API.Builder.Routes
 
 import Data.Aeson
 import Data.ByteString.Lazy (ByteString)
-import Network.HTTP.Conduit
+import Network.HTTP.Client
 import qualified Data.ByteString.Char8 as ByteString
 import qualified Data.Text as Text
 

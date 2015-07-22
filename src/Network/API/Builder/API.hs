@@ -36,7 +36,8 @@ import Control.Monad.Trans.Reader
 import Control.Monad.Trans.State
 import Data.ByteString.Lazy (ByteString)
 import Data.Text (Text)
-import Network.HTTP.Conduit
+import Network.HTTP.Client
+import Network.HTTP.Client.TLS
 
 -- | Main API type. @s@ is the API's internal state, @e@ is the API's custom error type,
 --   and @a@ is the result when the API runs. Based on the @APIT@ transformer.
@@ -78,7 +79,7 @@ execAPI :: MonadIO m
        -> APIT s e m a -- ^ the actual @API@ to run
        -> m (Either (APIError e) a) -- ^ IO action that returns either an error or the result
 execAPI b s api = do
-  m <- liftIO $ newManager conduitManagerSettings
+  m <- liftIO $ newManager tlsManagerSettings
   (res, _, _) <- runAPI b m s api
   liftIO $ closeManager m
   return res

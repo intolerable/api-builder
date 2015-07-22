@@ -7,7 +7,7 @@ import Data.Aeson hiding (decode)
 import Data.Aeson.Parser
 import Data.Aeson.Types (parseEither)
 import Data.ByteString.Lazy (ByteString)
-import Network.HTTP.Conduit
+import Network.HTTP.Client
 
 class Receivable r where
   receive :: ErrorReceivable e => Response ByteString -> Either (APIError e) r

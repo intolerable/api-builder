@@ -9,7 +9,7 @@ import Network.API.Builder.Send
 import Control.Monad
 import Control.Monad.IO.Class
 import Network.HTTP.Client.MultipartFormData
-import Network.HTTP.Conduit (Request)
+import Network.HTTP.Client (Request)
 
 -- | A type for multipart forms, which uses 'Part's from 'Network.HTTP.Client.MultipartFormData'.
 --   Construct it and send it with 'sendMultipart' (not 'send').

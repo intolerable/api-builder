@@ -2,7 +2,7 @@ module Network.API.Builder.Error
   ( APIError(..) ) where
 
 import Data.Monoid
-import Network.HTTP.Conduit (HttpException)
+import Network.HTTP.Client (HttpException)
 
 -- | Error type for the @API@, where @a@ is the type that should be returned when
 --   something goes wrong on the other end - i.e. any error that isn't directly related

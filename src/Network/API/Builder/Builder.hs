@@ -5,7 +5,7 @@ module Network.API.Builder.Builder
 import Network.API.Builder.Routes
 
 import Data.Text (Text)
-import Network.HTTP.Conduit (Request)
+import Network.HTTP.Client (Request)
 import qualified Data.Text as T
 
 -- | Builder type for the API. Keeps track of the API's name and base URL, and how
