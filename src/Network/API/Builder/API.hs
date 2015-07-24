@@ -51,7 +51,7 @@ type APIT s e m a = ResumeAPIT s e a m a
 -- | Main API transformer type. @s@ is the API's internal state, @e@ is the API's custom error type,
 --   and @a@ is the result when the API runs.
 newtype ResumeAPIT s e r m a =
-  ResumeAPIT (ContT r (ExceptT (APIError e, ResumeAPIT s e r m r) (ReaderT Manager (StateT Builder (StateT s m)))) a)
+  ResumeAPIT (ContT r (ExceptT (APIError e, Maybe (ResumeAPIT s e r m r)) (ReaderT Manager (StateT Builder (StateT s m)))) a)
   deriving (Functor, Applicative, Monad, MonadIO)
 
 instance MonadTrans (ResumeAPIT s e r) where
@@ -60,12 +60,12 @@ instance MonadTrans (ResumeAPIT s e r) where
 -- | Lifts an action that works on an @API@ to an action that works on an @API@.
 --   This function is provided solely for future-proofing in the case that more transformers
 --   need to be stacked on top - it's implemented simply as @id@ for the moment.
-liftExcept :: Monad m => ExceptT (APIError e, ResumeAPIT s e r m r) (ReaderT Manager (StateT Builder (StateT s m))) a -> ResumeAPIT s e r m a
+liftExcept :: Monad m => ExceptT (APIError e, Maybe (ResumeAPIT s e r m r)) (ReaderT Manager (StateT Builder (StateT s m))) a -> ResumeAPIT s e r m a
 liftExcept = ResumeAPIT . lift
 
 {-# DEPRECATED liftEither "Use liftExcept" #-}
 -- | Identical to 'liftExcept', provided for (almost) compatibility.
-liftEither :: Monad m => ExceptT (APIError e, ResumeAPIT s e r m r) (ReaderT Manager (StateT Builder (StateT s m))) a -> ResumeAPIT s e r m a
+liftEither :: Monad m => ExceptT (APIError e, Maybe (ResumeAPIT s e r m r)) (ReaderT Manager (StateT Builder (StateT s m))) a -> ResumeAPIT s e r m a
 liftEither = ResumeAPIT . lift
 
 -- | Lifts an action that works on a @Manager@ to one that works on an @API@.
@@ -111,7 +111,7 @@ runResumeAPI :: MonadIO m
              -> Manager
              -> s
              -> ResumeAPIT s e a m a
-             -> m (Either (APIError e, ResumeAPIT s e a m a) a, Builder, s)
+             -> m (Either (APIError e, Maybe (ResumeAPIT s e a m a)) a, Builder, s)
 runResumeAPI b m s (ResumeAPIT api) = do
   ((res, b'), s') <- runStateT (runStateT (runReaderT (runExceptT (runContT api return)) m) b) s
   return (res, b', s')
@@ -144,8 +144,8 @@ sendRoute s r = do
       res <- ExceptT $ return $ first HTTPError response
       ExceptT $ return $ receive res
 
-addLabel :: c -> Either a b -> Either (a, c) b
-addLabel l (Left x) = Left (x, l)
+addLabel :: c -> Either a b -> Either (a, Maybe c) b
+addLabel l (Left x) = Left (x, Just l)
 addLabel _ (Right x) = Right x
 
 mkLabel :: ContT r m (ContT r m a)
