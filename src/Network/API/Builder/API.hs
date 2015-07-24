@@ -48,7 +48,7 @@ type API s e a = APIT s e a IO a
 -- | Main API transformer type. @s@ is the API's internal state, @e@ is the API's custom error type,
 --   and @a@ is the result when the API runs.
 newtype APIT s e r m a =
-  APIT { unAPIT :: ContT r (ExceptT (APIError e, APIT s e r m r) (ReaderT Manager (StateT Builder (StateT s m)))) a }
+  APIT (ContT r (ExceptT (APIError e, APIT s e r m r) (ReaderT Manager (StateT Builder (StateT s m)))) a)
   deriving (Functor, Applicative, Monad, MonadIO)
 
 instance MonadTrans (APIT s e r) where
@@ -141,9 +141,11 @@ sendRoute s r = do
       res <- ExceptT $ return $ first HTTPError response
       ExceptT $ return $ receive res
 
+addLabel :: c -> Either a b -> Either (a, c) b
 addLabel l (Left x) = Left (x, l)
 addLabel _ (Right x) = Right x
 
+mkLabel :: ContT r m (ContT r m a)
 mkLabel = callCC $ \k -> let x = k x in return x
 
 -- | Try to construct a @Request@ from a @Route@ (with the help of the @Builder@). Returns @Nothing@ if
