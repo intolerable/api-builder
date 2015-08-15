@@ -65,7 +65,7 @@ test-suite test
     aeson,
     bytestring,
     hspec,
-    http-conduit,
+    http-client,
     text,
     transformers
   GHC-options: -Wall

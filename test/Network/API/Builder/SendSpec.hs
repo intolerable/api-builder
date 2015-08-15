@@ -6,7 +6,7 @@ import Network.API.Builder.Send
 
 import Data.Aeson
 import Data.ByteString.Lazy (ByteString)
-import qualified Network.HTTP.Conduit as HTTP
+import qualified Network.HTTP.Client as HTTP
 import Test.Hspec
 
 main :: IO ()
