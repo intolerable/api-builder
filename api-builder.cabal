@@ -38,7 +38,7 @@ library
     bifunctors >= 4.0 && < 6.0,
     bytestring == 0.10.*,
     HTTP == 4000.*,
-    http-client >= 0.4.11 && < 0.4.19,
+    http-client >= 0.4.11 && < 0.4.21,
     http-client-tls >= 0.2 && < 0.2.3,
     http-types == 0.8.*,
     text == 1.*,
