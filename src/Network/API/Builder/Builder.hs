@@ -5,7 +5,11 @@ module Network.API.Builder.Builder
 import Network.API.Builder.Routes
 
 import Data.Text (Text)
+#ifdef __GHCJS__
+import JavaScript.Web.XMLHttpRequest (Request)
+#else
 import Network.HTTP.Client (Request)
+#endif
 import qualified Data.Text as T
 
 -- | Builder type for the API. Keeps track of the API's name and base URL, and how

@@ -1,11 +1,25 @@
+{-# LANGUAGE OverloadedStrings #-}
 module Network.API.Builder.Receive where
 
 import Network.API.Builder.Error
 
 import Control.Applicative
 import Data.Aeson
+
+#ifdef __GHCJS__
+
+import Data.ByteString (ByteString)
+import Data.ByteString.Lazy (fromStrict)
+import Data.Maybe (fromMaybe)
+import JavaScript.Web.XMLHttpRequest
+
+#else
+
 import Data.ByteString.Lazy (ByteString)
 import Network.HTTP.Client
+
+#endif
+
 import Prelude
 
 class Receivable r where
@@ -34,7 +48,7 @@ instance (Receivable a, Receivable b, Receivable c, Receivable d, Receivable e) 
 
 useFromJSON :: (FromJSON a, ErrorReceivable e) => Response ByteString -> Either (APIError e) a
 useFromJSON resp =
-  case eitherDecode $ responseBody resp of
+  case jsonDecode $ responseBody resp of
     Left err ->
       case receiveError resp of
         Just x -> Left $ APIError x
@@ -55,7 +69,7 @@ instance ErrorReceivable Value where
 
 useErrorFromJSON :: FromJSON a => Response ByteString -> Maybe a
 useErrorFromJSON resp =
-  case eitherDecode (responseBody resp) of
+  case jsonDecode (responseBody resp) of
     Right x -> Just x
     Left _ -> Nothing
 
@@ -68,3 +82,17 @@ instance FromJSON a => FromJSON (JSONResponse a) where
 instance FromJSON a => Receivable (JSONResponse a) where
   receive = useFromJSON
 
+#ifdef __GHCJS__
+
+responseBody :: Response ByteString -> ByteString
+responseBody = fromMaybe "" . contents
+
+jsonDecode :: FromJSON a => ByteString -> Either String a
+jsonDecode = eitherDecode . fromStrict
+
+#else
+
+jsonDecode :: FromJSON a => ByteString -> Either String a
+jsonDecode = eitherDecode
+
+#endif
