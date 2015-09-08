@@ -19,7 +19,16 @@ module Network.API.Builder.API (
   , name
   , baseURL
   , customizeRoute
-  , customizeRequest ) where
+  , customizeRequest
+#ifdef __GHCJS__
+  , Manager(..)
+  , ManagerSettings(..)
+  , httpLbs
+  , newManager
+  , closeManager
+  , tlsManagerSettings
+#endif
+  ) where
 
 import           Network.API.Builder.Builder
 import           Network.API.Builder.Error
