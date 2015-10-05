@@ -38,4 +38,3 @@ isNubbed = f Set.empty
   where
     f _ [] = True
     f s (x:xs) = not (Set.member x s) && f (Set.insert x s) xs
-
