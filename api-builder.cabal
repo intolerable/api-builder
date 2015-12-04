@@ -36,7 +36,7 @@ library
       Network.API.Builder.Send.Multipart
   build-depends:
     base >= 4.6 && < 4.9,
-    aeson >= 0.9 && < 0.10,
+    aeson >= 0.9 && < 0.11,
     bifunctors >= 4.0 && < 6.0,
     bytestring == 0.10.*,
     HTTP == 4000.*,
@@ -45,8 +45,8 @@ library
     transformers >= 0.4 && < 0.5
   if !impl(ghcjs)
       build-depends:
-        http-client >= 0.4.11 && < 0.4.21,
-        http-client-tls >= 0.2 && < 0.2.3
+        http-client >= 0.4.11 && < 0.4.25,
+        http-client-tls >= 0.2 && < 0.3
   if impl(ghcjs)
       build-depends:
         ghcjs-base
