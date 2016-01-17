@@ -43,6 +43,9 @@ instance Sendable Value where
               , method = httpMethod r }
       _ -> Nothing
 
+useToJSON :: ToJSON a => Builder -> Route -> a -> Maybe Request
+useToJSON b r v = send b r (toJSON v)
+
 instance Sendable ByteString where
   send builder r bs =
     case httpMethod r of
