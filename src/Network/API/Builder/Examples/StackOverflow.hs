@@ -35,6 +35,9 @@ instance Receivable Questions where
 stackOverflow :: Builder
 stackOverflow = basicBuilder "StackOverflow API" "http://api.stackexchange.com"
 
+stackOverflowSSL :: Builder
+stackOverflowSSL = basicBuilder "StackOverflow API" "https://api.stackexchange.com"
+
 answersRoute :: Route
 answersRoute = Route { urlPieces = [ "2.2", "questions" ]
                      , urlParams = [ "order" =. ("desc" :: Text)
@@ -44,3 +47,6 @@ answersRoute = Route { urlPieces = [ "2.2", "questions" ]
 
 getAnswers :: IO (Either (APIError ()) Questions)
 getAnswers = execAPI stackOverflow () $ runRoute answersRoute
+
+getAnswersSSL :: IO (Either (APIError ()) Questions)
+getAnswersSSL = execAPI stackOverflowSSL () $ runRoute answersRoute
