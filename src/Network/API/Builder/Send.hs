@@ -1,3 +1,4 @@
+{-# LANGUAGE CPP #-}
 module Network.API.Builder.Send where
 
 import Network.API.Builder.Builder

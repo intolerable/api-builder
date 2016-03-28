@@ -58,7 +58,6 @@ library
   default-extensions:
     FlexibleInstances
     OverloadedStrings
-    CPP
   ghc-options: -Wall
 
 test-suite test

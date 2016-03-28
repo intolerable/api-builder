@@ -1,3 +1,4 @@
+{-# LANGUAGE CPP #-}
 module Network.API.Builder.Error
   ( APIError(..) ) where
 
