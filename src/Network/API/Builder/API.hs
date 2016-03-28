@@ -1,3 +1,4 @@
+{-# LANGUAGE CPP #-}
 module Network.API.Builder.API (
   -- * API
     API
@@ -19,25 +20,65 @@ module Network.API.Builder.API (
   , name
   , baseURL
   , customizeRoute
-  , customizeRequest ) where
+  , customizeRequest
+#ifdef __GHCJS__
+  , Manager(..)
+  , ManagerSettings(..)
+  , httpLbs
+  , newManager
+  , closeManager
+  , tlsManagerSettings
+#endif
+  ) where
 
-import Network.API.Builder.Builder
-import Network.API.Builder.Error
-import Network.API.Builder.Receive
-import Network.API.Builder.Routes
-import Network.API.Builder.Send
+import           Network.API.Builder.Builder
+import           Network.API.Builder.Error
+import           Network.API.Builder.Receive
+import           Network.API.Builder.Routes
+import           Network.API.Builder.Send
 
-import Data.Bifunctor
-import Control.Exception
-import Control.Monad.IO.Class (MonadIO, liftIO)
-import Control.Monad.Trans.Class (lift)
-import Control.Monad.Trans.Except
-import Control.Monad.Trans.Reader
-import Control.Monad.Trans.State
-import Data.ByteString.Lazy (ByteString)
-import Data.Text (Text)
+import           Control.Exception
+import           Control.Monad.IO.Class      (MonadIO, liftIO)
+import           Control.Monad.Trans.Class   (lift)
+import           Control.Monad.Trans.Except
+import           Control.Monad.Trans.Reader
+import           Control.Monad.Trans.State
+import           Data.Bifunctor
+import           Data.Text                   (Text)
+
+#ifdef __GHCJS__
+
+import JavaScript.Web.XMLHttpRequest
+import           Data.ByteString        (ByteString)
+
+#else
+
+import           Data.ByteString.Lazy        (ByteString)
 import Network.HTTP.Client
 import Network.HTTP.Client.TLS
+
+#endif
+
+#ifdef __GHCJS__
+data Manager = Manager
+
+data ManagerSettings = ManagerSettings
+
+httpLbs :: Request -> Manager -> IO (Response ByteString)
+
+httpLbs req _ =
+  xhrByteString req
+
+newManager :: ManagerSettings -> IO Manager
+newManager _ = return Manager
+
+closeManager :: Manager -> IO ()
+closeManager _ = return ()
+
+tlsManagerSettings :: ManagerSettings
+tlsManagerSettings = ManagerSettings
+
+#endif
 
 -- | Main API type. @s@ is the API's internal state, @e@ is the API's custom error type,
 --   and @a@ is the result when the API runs. Based on the @APIT@ transformer.

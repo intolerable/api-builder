@@ -49,12 +49,7 @@ routeURL baseURL (Route fs ps _) =
   where
     firstSep = if null fs then T.empty else "/"
     path = T.intercalate "/" fs
-    querySep = if null ps then T.empty else pathParamsSep fs
-
-
-pathParamsSep :: [URLPiece] -> Text
-pathParamsSep [] = "?"
-pathParamsSep xs = if T.isInfixOf "." (last xs) then "?" else "/?"
+    querySep = if null ps then T.empty else "?"
 
 buildParams :: [URLParam] -> Text
 buildParams = T.pack . HTTP.urlEncodeVars . concatMap (map (T.unpack *** T.unpack))

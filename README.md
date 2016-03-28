@@ -71,3 +71,6 @@ getAnswers = execAPI stackOverflow () $ runRoute answersRoute
 > getAnswers
 Right (Questions [Question {title = "Using parse API with codeigniter", isAnswered = True, score = 2, tags = ["php","codeigniter","parse.com","codeigniter-2","php-5.6"]},Question {title = "Object...
 ```
+
+If you have built code with GHCJS you can open `your-bin-dir/ghcjs-example.jsexe/index.html`
+in your browser and see the result of query execution in a browser console.

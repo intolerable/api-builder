@@ -1,9 +1,18 @@
+{-# LANGUAGE CPP #-}
 module Network.API.Builder.Error
   ( APIError(..) ) where
 
 import Data.Monoid
+#ifdef __GHCJS__
+import JavaScript.Web.XMLHttpRequest (XHRError)
+#else
 import Network.HTTP.Client (HttpException)
+#endif
 import Prelude
+
+#ifdef __GHCJS__
+type HttpException = XHRError
+#endif
 
 -- | Error type for the @API@, where @a@ is the type that should be returned when
 --   something goes wrong on the other end - i.e. any error that isn't directly related
