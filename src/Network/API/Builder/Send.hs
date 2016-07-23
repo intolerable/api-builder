@@ -18,7 +18,7 @@ instance Sendable () where
   send builder r () =
     case httpMethod r of
       "POST" -> do
-        req <- parseUrl $ Text.unpack $ routeURL (_baseURL builder) (_customizeRoute builder r)
+        req <- parseUrlThrow $ Text.unpack $ routeURL (_baseURL builder) (_customizeRoute builder r)
         return $ _customizeRequest builder $
           req { requestHeaders = ("Content-Type", "application/x-www-form-urlencoded") : requestHeaders req
               , requestBody = RequestBodyBS (dropQuestion $ queryString req)
@@ -29,14 +29,14 @@ instance Sendable () where
 
 basicSend :: Builder -> Route -> Maybe Request
 basicSend builder r = do
-  req <- parseUrl $ Text.unpack $ routeURL (_baseURL builder) (_customizeRoute builder r)
+  req <- parseUrlThrow $ Text.unpack $ routeURL (_baseURL builder) (_customizeRoute builder r)
   return $ _customizeRequest builder $ req { method = httpMethod r }
 
 instance Sendable Value where
   send builder r value =
     case httpMethod r of
       "POST" -> do
-        req <- parseUrl $ Text.unpack $ routeURL (_baseURL builder) (_customizeRoute builder r)
+        req <- parseUrlThrow $ Text.unpack $ routeURL (_baseURL builder) (_customizeRoute builder r)
         return $ _customizeRequest builder $
           req { requestBody = RequestBodyLBS (encode value)
               , requestHeaders = ("Content-Type", "application/json") : requestHeaders req

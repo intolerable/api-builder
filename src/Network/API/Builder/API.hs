@@ -81,7 +81,6 @@ execAPI :: MonadIO m
 execAPI b s api = do
   m <- liftIO $ newManager tlsManagerSettings
   (res, _, _) <- runAPI b m s api
-  liftIO $ closeManager m
   return res
 
 -- | Runs an @API@ by executing its transformer stack and dumping it all into @IO@.
