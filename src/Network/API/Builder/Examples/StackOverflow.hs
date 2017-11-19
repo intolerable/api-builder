@@ -3,7 +3,7 @@
 module Network.API.Builder.Examples.StackOverflow where
 
 import Network.API.Builder
-import Control.Applicative
+import Control.Applicative ((<$>), (<*>))
 import Data.Aeson
 import Data.Monoid (mempty)
 import Data.Text (Text)
