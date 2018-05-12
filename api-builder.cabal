@@ -2,10 +2,10 @@
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 0eeef858cc56a4b713b45ea8087cd313c3a382f040bf586e57ecf3e9a6bdad1b
+-- hash: 7c4b7181e34f5c26900835396c9c93f9249c246a35bacfea6a01f9a84dff464b
 
 name:           api-builder
-version:        0.14.0.0
+version:        0.15.0.0
 synopsis:       Library for easily building REST API wrappers in Haskell
 category:       Network
 homepage:       https://github.com/intolerable/api-builder
