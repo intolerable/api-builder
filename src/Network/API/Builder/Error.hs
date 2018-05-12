@@ -1,7 +1,10 @@
+{-# LANGUAGE CPP #-}
+
 module Network.API.Builder.Error
   ( APIError(..) ) where
 
-import Data.Monoid
+import Data.Monoid hiding ((<>))
+import Data.Semigroup
 import Network.HTTP.Client (HttpException)
 import Prelude
 
@@ -25,7 +28,13 @@ instance Eq a => Eq (APIError a) where
   (ParseError a) == (ParseError b) = a == b
   _ == _ = False
 
+instance Semigroup (APIError a) where
+  EmptyError <> x = x
+  x          <> _ = x
+
 instance Monoid (APIError a) where
   mempty = EmptyError
+#if !(MIN_VERSION_base(4,11,0))
   EmptyError `mappend` x = x
-  x `mappend` _ = x
+  x          `mappend` _ = x
+#endif
