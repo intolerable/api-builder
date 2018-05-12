@@ -1,91 +1,101 @@
-name: api-builder
-version: 0.14.0.0
-synopsis: Library for easily building REST API wrappers in Haskell
-license: BSD3
-license-file: LICENSE
-author: Fraser Murray
-maintainer: fraser.m.murray@gmail.com
-homepage: https://github.com/intolerable/api-builder
-copyright: (c) Fraser Murray 2014
-category: Network
-build-type: Simple
-cabal-version: >= 1.10
+-- This file has been generated from package.yaml by hpack version 0.20.0.
+--
+-- see: https://github.com/sol/hpack
+--
+-- hash: 0eeef858cc56a4b713b45ea8087cd313c3a382f040bf586e57ecf3e9a6bdad1b
+
+name:           api-builder
+version:        0.14.0.0
+synopsis:       Library for easily building REST API wrappers in Haskell
+category:       Network
+homepage:       https://github.com/intolerable/api-builder
+author:         Fraser Murray
+maintainer:     fraser.m.murray@gmail.com
+copyright:      (c) Fraser Murray 2014
+license:        BSD3
+license-file:   LICENSE
+build-type:     Simple
+cabal-version:  >= 1.10
 
 source-repository head
   type: git
   location: git://github.com/intolerable/api-builder.git
 
-source-repository this
-  type: git
-  location: git://github.com/intolerable/api-builder.git
-  tag: v0.11.0.0
-
 library
-  exposed-modules:
-    Network.API.Builder
-    Network.API.Builder.API
-    Network.API.Builder.Builder
-    Network.API.Builder.Error
-    Network.API.Builder.Examples.StackOverflow
-    Network.API.Builder.Query
-    Network.API.Builder.Receive
-    Network.API.Builder.Routes
-    Network.API.Builder.Send
-    Network.API.Builder.Send.Multipart
-  build-depends:
-    base >= 4.6 && < 4.12,
-    aeson >= 0.9 && < 1.3,
-    bifunctors >= 4.0 && < 6.0,
-    bytestring == 0.10.*,
-    HTTP == 4000.*,
-    http-client >= 0.4.30 && < 0.6,
-    http-client-tls >= 0.2 && < 0.4,
-    http-types >= 0.8 && < 0.13,
-    text == 1.*,
-    tls >= 1.3 && < 1.5,
-    transformers >= 0.4 && < 0.6
-  hs-source-dirs: src/
-  default-language: Haskell2010
-  default-extensions:
-    FlexibleInstances
-    OverloadedStrings
+  hs-source-dirs:
+      src
+  default-extensions: OverloadedStrings FlexibleInstances
   ghc-options: -Wall
+  build-depends:
+      HTTP ==4000.*
+    , aeson >=0.9 && <1.3
+    , base >=4.6 && <4.12
+    , bifunctors >=4.0 && <6.0
+    , bytestring ==0.10.*
+    , http-client >=0.4.30 && <0.6
+    , http-client-tls >=0.2 && <0.4
+    , http-types >=0.8 && <0.13
+    , text ==1.*
+    , tls >=1.3 && <1.5
+    , transformers >=0.4 && <0.6
+  exposed-modules:
+      Network.API.Builder
+      Network.API.Builder.API
+      Network.API.Builder.Builder
+      Network.API.Builder.Error
+      Network.API.Builder.Examples.StackOverflow
+      Network.API.Builder.Query
+      Network.API.Builder.Receive
+      Network.API.Builder.Routes
+      Network.API.Builder.Send
+      Network.API.Builder.Send.Multipart
+  other-modules:
+      Paths_api_builder
+  default-language: Haskell2010
 
 test-suite test
-  hs-source-dirs: test
-  main-is: Spec.hs
-  default-extensions:
-    OverloadedStrings
-    ScopedTypeVariables
-  default-language: Haskell2010
   type: exitcode-stdio-1.0
+  main-is: Spec.hs
+  hs-source-dirs:
+      test
+  default-extensions: OverloadedStrings FlexibleInstances ScopedTypeVariables
+  ghc-options: -Wall
   build-depends:
-    base == 4.*,
-    Cabal >= 1.16.0,
-    api-builder,
-    aeson,
-    bytestring,
-    hspec,
-    http-client,
-    text,
-    transformers
-  GHC-options: -Wall
+      Cabal >=1.16.0
+    , aeson
+    , api-builder
+    , base ==4.*
+    , bytestring
+    , hspec
+    , http-client
+    , text
+    , transformers
+  other-modules:
+      Network.API.Builder.ErrorSpec
+      Network.API.Builder.QuerySpec
+      Network.API.Builder.RoutesSpec
+      Network.API.Builder.SendSpec
+      Paths_api_builder
+  default-language: Haskell2010
 
 test-suite test-io
-  hs-source-dirs: test-io
-  main-is: Spec.hs
-  default-extensions:
-    LambdaCase
-  default-language: Haskell2010
   type: exitcode-stdio-1.0
+  main-is: Spec.hs
+  hs-source-dirs:
+      test-io
+  default-extensions: OverloadedStrings FlexibleInstances LambdaCase
+  ghc-options: -Wall
   build-depends:
-    base == 4.*,
-    Cabal >= 1.16.0,
-    api-builder,
-    aeson,
-    bytestring,
-    containers,
-    hspec,
-    text,
-    transformers
-  GHC-options: -Wall
+      Cabal >=1.16.0
+    , aeson
+    , api-builder
+    , base ==4.*
+    , bytestring
+    , containers
+    , hspec
+    , text
+    , transformers
+  other-modules:
+      Network.API.Builder.Examples.StackOverflowSpec
+      Paths_api_builder
+  default-language: Haskell2010
