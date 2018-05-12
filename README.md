@@ -2,7 +2,7 @@
 
 Simple library for building API wrappers in Haskell – define a `Builder`, add some types with `Receivable` instances, an error type, and some routes, and you can easily use any API from Haskell code. Based on a `EitherT StateT StateT` monad transformer stack.
 
-### Stack Overflow example
+## Stack Overflow example
 
 Define a type for a stack overflow question:
 
