@@ -25,7 +25,9 @@ instance Eq a => Eq (APIError a) where
   (ParseError a) == (ParseError b) = a == b
   _ == _ = False
 
+instance Semigroup (APIError a) where
+  EmptyError <> x = x
+  x <> _ = x
+
 instance Monoid (APIError a) where
   mempty = EmptyError
-  EmptyError `mappend` x = x
-  x `mappend` _ = x
