@@ -1,7 +1,7 @@
 module Network.API.Builder.Error
   ( APIError(..) ) where
 
-import Data.Monoid
+import Data.Semigroup
 import Network.HTTP.Client (HttpException)
 import Prelude
 
@@ -23,9 +23,13 @@ instance Eq a => Eq (APIError a) where
   (APIError a) == (APIError b) = a == b
   InvalidURLError == InvalidURLError = True
   (ParseError a) == (ParseError b) = a == b
+  EmptyError == EmptyError = True
   _ == _ = False
+
+instance Semigroup (APIError a) where
+  EmptyError <> x = x
+  x <> _ = x
 
 instance Monoid (APIError a) where
   mempty = EmptyError
-  EmptyError `mappend` x = x
-  x `mappend` _ = x
+  mappend = (<>)

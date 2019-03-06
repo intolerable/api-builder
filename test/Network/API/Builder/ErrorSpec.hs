@@ -1,12 +1,23 @@
+{-# OPTIONS_GHC -fno-warn-orphans #-}
 module Network.API.Builder.ErrorSpec where
 
+import Data.Semigroup ((<>))
 import Network.API.Builder.Error
 
 import Test.Hspec
 import Test.Hspec.QuickCheck
+import Test.QuickCheck
 
 main :: IO ()
 main = hspec spec
+
+instance Arbitrary a => Arbitrary (APIError a) where
+  arbitrary = oneof
+    [ APIError <$> arbitrary
+    , pure InvalidURLError
+    , ParseError <$> arbitrary
+    , pure EmptyError
+    ]
 
 spec :: Spec
 spec =
@@ -23,3 +34,7 @@ spec =
 
       prop "APIError x == APIError x" $ \(x :: String) ->
         APIError x == APIError x
+
+    describe "Semigroup" $ do
+      prop "(x <> y) <> z == x <> (y <> z)" $ \(x :: APIError ()) y z ->
+        (x <> y) <> z == x <> (y <> z)

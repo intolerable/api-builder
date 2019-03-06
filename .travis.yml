@@ -16,6 +16,8 @@ before_install:
 matrix:
   include:
     - env: STACK_YAML=stack-lts-9.21.yaml
+    - env: STACK_YAML=stack-lts-11.22.yaml
+    - env: STACK_YAML=stack-lts-12.26.yaml
     - env: STACK_YAML=stack.yaml
 
 script:
