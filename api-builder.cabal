@@ -20,7 +20,7 @@ library
   default-extensions:
     OverloadedStrings
     FlexibleInstances
-  ghc-options: -Wall -Werror
+  ghc-options: -Wall
   build-depends:
     HTTP ==4000.*,
     aeson >=0.9 && <1.5,
@@ -53,7 +53,7 @@ test-suite test
   main-is: Spec.hs
   hs-source-dirs: test/
   default-extensions: OverloadedStrings FlexibleInstances ScopedTypeVariables
-  ghc-options: -Wall -Werror
+  ghc-options: -Wall
   build-depends:
     Cabal >=1.16.0,
     aeson,
@@ -78,7 +78,7 @@ test-suite test-io
   main-is: Spec.hs
   hs-source-dirs: test-io/
   default-extensions: OverloadedStrings FlexibleInstances LambdaCase
-  ghc-options: -Wall -Werror
+  ghc-options: -Wall
   build-depends:
       Cabal >=1.16.0
     , aeson
