@@ -60,6 +60,10 @@ jobs:
     <<: *build
     environment:
       STACK_YAML: stack-lts-13.19.yaml
+  lts-14-7-build:
+    <<: *build
+    environment:
+      STACK_YAML: stack-lts-14.7.yaml
 
 workflows:
   version: 2
@@ -71,6 +75,7 @@ workflows:
       - lts-11-22-build
       - lts-12-26-build
       - lts-13-19-build
+      - lts-14-7-build
   nightly:
     triggers:
       - schedule:
